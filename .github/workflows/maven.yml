@@ -6,17 +6,14 @@ name: Java CI with Maven
 on:
   push:
     branches:
-      - develop
-      - nightriderz
-      - overdrive
-      - worldonline
+      - main
     paths:
       - src/**
       - xsd/**
       - xsd-final/**
   pull_request:
     branches:
-      - develop
+      - main
     paths:
       - src/**
       - xsd/**
@@ -37,7 +34,7 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
     - name: Build with Maven
-      run: git fetch --all --tags && mvn clean package -e "-Dnfs.core.stage=production"
+      run: mvn clean package -e "-Dnfs.core.stage=production"
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
