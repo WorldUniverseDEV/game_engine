@@ -56,11 +56,11 @@ public class SocialBO {
             description = description.replace("~", "\\~");
 
             switch(petitionType) {
-                case 0:     petitionTypeText = "CHAT"; break;
-                case 1:     petitionTypeText = "STATUS MESSAGE"; break;
-                case 2:     petitionTypeText = "DRIVERNAME"; break;
-                case 3:     petitionTypeText = "CAR CUSTOMIZATION"; break;
-                case 4:     petitionTypeText = "CHEAT"; break;
+                case 0:     petitionTypeText = "Chat"; break;
+                case 1:     petitionTypeText = "Status Message"; break;
+                case 2:     petitionTypeText = "Driver Name"; break;
+                case 3:     petitionTypeText = "Car Customization"; break;
+                case 4:     petitionTypeText = "Cheating"; break;
                 default:    petitionTypeText = "Unknown"; break;
             }
 
