@@ -61,7 +61,7 @@ public class UserEntity {
     @Column(name = "isDeveloper")
     private boolean isDeveloper;
 
-    private int maxCarSlots = 300;
+    private int maxCarSlots;
 
     @Column(name = "DiscordID", length = 255)
 	private String discordid;

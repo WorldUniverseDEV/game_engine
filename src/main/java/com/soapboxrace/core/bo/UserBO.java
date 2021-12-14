@@ -74,6 +74,7 @@ public class UserBO {
         userEntity.setEmail(email);
         userEntity.setPassword(password);
         userEntity.setIpAddress(ip);
+        userEntity.setMaxCarSlots(parameterBO.getIntParam("SBRWR_MAXCARSLOTS", 300));
         userEntity.setCreated(LocalDateTime.now());
         userEntity.setLastLogin(LocalDateTime.now());
         userDao.insert(userEntity);
