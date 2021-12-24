@@ -227,7 +227,6 @@ public class DriverPersonaBO {
             personaBase.setName(personaEntity.getName());
         }
 
-        personaBase.setName(personaEntity.getName());
         personaBase.setPresence(presenceBO.getPresence(personaEntity.getPersonaId()));
         personaBase.setPersonaId(personaEntity.getPersonaId());
         personaBase.setScore(personaEntity.getScore());
