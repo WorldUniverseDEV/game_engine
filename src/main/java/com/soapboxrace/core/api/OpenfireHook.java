@@ -2,10 +2,14 @@ package com.soapboxrace.core.api;
 
 import com.soapboxrace.core.bo.AdminBO;
 import com.soapboxrace.core.bo.ParameterBO;
+import com.soapboxrace.core.bo.RequestSessionInfo;
 import com.soapboxrace.core.dao.PersonaDAO;
 import com.soapboxrace.core.jpa.PersonaEntity;
+import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
+import com.soapboxrace.core.xmpp.XmppChat;
 
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -24,19 +28,36 @@ public class OpenfireHook {
     @EJB
     private AdminBO adminBO;
 
+    @Inject
+    private RequestSessionInfo requestSessionInfo;
+
+    @EJB
+    private OpenFireSoapBoxCli openFireSoapBoxCli;
+
     @POST
     public Response openfireHook(@HeaderParam("Authorization") String token, @QueryParam("cmd") String command, @QueryParam("pid") long persona, @QueryParam("webhook") Boolean webHook) {
-        String correctToken = parameterBO.getStrParam("OPENFIRE_TOKEN");
-
-        if (token == null || !MessageDigest.isEqual(token.getBytes(), correctToken.getBytes())) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("invalid token").build();
-        }
-
         PersonaEntity personaEntity = personaDAO.find(persona);
 
-        if (personaEntity != null && personaEntity.getUser().isAdmin()) {
-            Boolean sendOrNot = Boolean.valueOf(webHook);
-            adminBO.sendChatCommand(persona, command, personaEntity.getName(), sendOrNot);
+        if(command.contains("nopu")) {
+            if(requestSessionInfo.getActiveLobbyId() != 0) {
+                //TODO: Check if user has already voted in, for now, just print its LOBBYID and SESSIONID for debug.
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("LOBBYID: " + requestSessionInfo.getActiveLobbyId()), personaEntity.getPersonaId());
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SESSIONID: " + requestSessionInfo.getEventSessionId()), personaEntity.getPersonaId());
+            } else {
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("You are not in event."), personaEntity.getPersonaId());
+            }
+        } else {
+            String correctToken = parameterBO.getStrParam("OPENFIRE_TOKEN");
+
+            if (token == null || !MessageDigest.isEqual(token.getBytes(), correctToken.getBytes())) {
+                return Response.status(Response.Status.BAD_REQUEST).entity("invalid token").build();
+            }
+
+
+            if (personaEntity != null && personaEntity.getUser().isAdmin()) {
+                Boolean sendOrNot = Boolean.valueOf(webHook);
+                adminBO.sendChatCommand(persona, command, personaEntity.getName(), sendOrNot);
+            }
         }
         
         return Response.noContent().build();
