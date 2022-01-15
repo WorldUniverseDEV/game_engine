@@ -2,9 +2,10 @@ package com.soapboxrace.core.api;
 
 import com.soapboxrace.core.bo.AdminBO;
 import com.soapboxrace.core.bo.ParameterBO;
-import com.soapboxrace.core.bo.RequestSessionInfo;
+import com.soapboxrace.core.bo.TokenSessionBO;
 import com.soapboxrace.core.dao.PersonaDAO;
 import com.soapboxrace.core.jpa.PersonaEntity;
+import com.soapboxrace.core.jpa.TokenSessionEntity;
 import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
 import com.soapboxrace.core.xmpp.XmppChat;
 
@@ -28,8 +29,8 @@ public class OpenfireHook {
     @EJB
     private AdminBO adminBO;
 
-    @Inject
-    private RequestSessionInfo requestSessionInfo;
+    @EJB
+    private TokenSessionBO tokenSessionBO;
 
     @EJB
     private OpenFireSoapBoxCli openFireSoapBoxCli;
@@ -39,10 +40,12 @@ public class OpenfireHook {
         PersonaEntity personaEntity = personaDAO.find(persona);
 
         if(command.contains("nopu")) {
-            if(requestSessionInfo.getActiveLobbyId() != 0) {
+            TokenSessionEntity tokendata = tokenSessionBO.findByUserId(personaEntity.getUser().getId());
+
+            if(tokendata.getActiveLobbyId() != 0) {
                 //TODO: Check if user has already voted in, for now, just print its LOBBYID and SESSIONID for debug.
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("LOBBYID: " + requestSessionInfo.getActiveLobbyId()), personaEntity.getPersonaId());
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SESSIONID: " + requestSessionInfo.getEventSessionId()), personaEntity.getPersonaId());
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("LOBBYID: " + tokendata.getActiveLobbyId()), personaEntity.getPersonaId());
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SESSIONID: " + tokendata.getEventSessionId()), personaEntity.getPersonaId());
             } else {
                 openFireSoapBoxCli.send(XmppChat.createSystemMessage("You are not in event."), personaEntity.getPersonaId());
             }
