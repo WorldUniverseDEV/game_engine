@@ -9,11 +9,13 @@ package com.soapboxrace.core.api;
 import com.soapboxrace.core.api.util.Secured;
 import com.soapboxrace.core.bo.*;
 import com.soapboxrace.core.bo.util.AchievementInventoryContext;
+import com.soapboxrace.core.jpa.EventSessionEntity;
 import com.soapboxrace.core.jpa.InventoryItemEntity;
 import com.soapboxrace.core.jpa.PersonaEntity;
 import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
 import com.soapboxrace.jaxb.xmpp.XMPP_PowerupActivatedType;
 import com.soapboxrace.jaxb.xmpp.XMPP_ResponseTypePowerupActivated;
+import com.soapboxrace.core.xmpp.XmppChat;
 
 import javax.ejb.EJB;
 import javax.inject.Inject;
@@ -42,6 +44,9 @@ public class Powerups {
     @EJB
     private PowerupTrackingBO usedPowerupBO;
 
+    @EJB
+    private EventBO eventBO;
+
     @Inject
     private RequestSessionInfo requestSessionInfo;
 
@@ -49,11 +54,15 @@ public class Powerups {
     @Secured
     @Path("/activated/{powerupHash}")
     @Produces(MediaType.APPLICATION_XML)
-    public String activated(@PathParam(value = "powerupHash") Integer powerupHash,
-                            @QueryParam("targetId") Long targetId,
-                            @QueryParam("receivers") String receivers,
-                            @QueryParam("eventSessionId") Long eventSessionId) {
+    public String activated(@PathParam(value = "powerupHash") Integer powerupHash, @QueryParam("targetId") Long targetId, @QueryParam("receivers") String receivers, @QueryParam("eventSessionId") Long eventSessionId) {
+        EventSessionEntity eventSession = eventBO.findEventSessionById(eventSessionId);
         Long activePersonaId = requestSessionInfo.getActivePersonaId();
+
+        if(eventSessionId != 0 && eventSession.getNopuMode() == true) {
+            openFireSoapBoxCli.send(XmppChat.createSystemMessage("This event has enforced no powerup mode enabled."), activePersonaId);
+            return "";
+        }
+
 
         XMPP_ResponseTypePowerupActivated powerupActivatedResponse = new XMPP_ResponseTypePowerupActivated();
         XMPP_PowerupActivatedType powerupActivated = new XMPP_PowerupActivatedType();

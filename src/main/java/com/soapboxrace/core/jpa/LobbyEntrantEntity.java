@@ -36,6 +36,9 @@ public class LobbyEntrantEntity implements Comparable<LobbyEntrantEntity> {
 
     private int gridIndex;
 
+    @Column(name = "NOPU")
+    private boolean nopuMode;
+
     public Long getId() {
         return id;
     }
@@ -71,6 +74,14 @@ public class LobbyEntrantEntity implements Comparable<LobbyEntrantEntity> {
 
     public void setGridIndex(int gridIndex) {
         this.gridIndex = gridIndex;
+    }
+
+    public boolean getNopuMode() { 
+        return nopuMode;
+    }
+
+    public void setNopuMode(boolean nopuMode) { 
+        this.nopuMode = nopuMode;
     }
 
 }
