@@ -58,7 +58,7 @@ public class Powerups {
         EventSessionEntity eventSession = eventBO.findEventSessionById(eventSessionId);
         Long activePersonaId = requestSessionInfo.getActivePersonaId();
 
-        if(eventSessionId != 0 && eventSession.getNopuMode() == true) {
+        if((eventSessionId != 0L || eventSessionId != null) && eventSession.getNopuMode() == true) {
             openFireSoapBoxCli.send(XmppChat.createSystemMessage("This event has enforced no powerup mode enabled."), activePersonaId);
             return "";
         }
