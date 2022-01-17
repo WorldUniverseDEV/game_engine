@@ -55,12 +55,15 @@ public class Powerups {
     @Path("/activated/{powerupHash}")
     @Produces(MediaType.APPLICATION_XML)
     public String activated(@PathParam(value = "powerupHash") Integer powerupHash, @QueryParam("targetId") Long targetId, @QueryParam("receivers") String receivers, @QueryParam("eventSessionId") Long eventSessionId) {
-        EventSessionEntity eventSession = eventBO.findEventSessionById(eventSessionId);
         Long activePersonaId = requestSessionInfo.getActivePersonaId();
 
-        if((eventSessionId != 0L || eventSessionId != null) && eventSession.getNopuMode() == true) {
-            openFireSoapBoxCli.send(XmppChat.createSystemMessage("This event has enforced no powerup mode enabled."), activePersonaId);
-            return "";
+        if(eventSessionId != 0L || eventSessionId != null) {
+            EventSessionEntity eventSession = eventBO.findEventSessionById(eventSessionId);
+
+            if(eventSession.getNopuMode() == true) {
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("This event has enforced no powerup mode enabled."), activePersonaId);
+                return "";
+            }
         }
 
 
