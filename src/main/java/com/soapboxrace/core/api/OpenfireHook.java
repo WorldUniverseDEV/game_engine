@@ -56,8 +56,6 @@ public class OpenfireHook {
             if(getActiveLobbyId != 0L) {
                 openFireSoapBoxCli.send(XmppChat.createSystemMessage("LOBBYID: " + getActiveLobbyId), personaEntity.getPersonaId());
                 openFireSoapBoxCli.send(XmppChat.createSystemMessage("SESSIONID: " + getEventSessionId), personaEntity.getPersonaId());
-            } else {
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_NOT_ON_EVENT"), personaEntity.getPersonaId());
             }
         } else {
             if (personaEntity != null && personaEntity.getUser().isAdmin()) {
