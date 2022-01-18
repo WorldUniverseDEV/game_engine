@@ -57,8 +57,8 @@ public class Powerups {
     public String activated(@PathParam(value = "powerupHash") Integer powerupHash, @QueryParam("targetId") Long targetId, @QueryParam("receivers") String receivers, @QueryParam("eventSessionId") Long eventSessionId) {
         Long activePersonaId = requestSessionInfo.getActivePersonaId();
 
-        if(eventSessionId != 0L || eventSessionId != null) {
-            EventSessionEntity eventSession = eventBO.findEventSessionById(eventSessionId);
+        if(requestSessionInfo.getEventSessionId() != 0L || requestSessionInfo.getEventSessionId() != null) {
+            EventSessionEntity eventSession = eventBO.findEventSessionById(requestSessionInfo.getEventSessionId());
 
             if(eventSession != null && eventSession.getNopuMode() == true) {
                 openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_MODE_ENABLED"), activePersonaId);

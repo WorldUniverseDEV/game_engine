@@ -10,7 +10,6 @@ import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
 import com.soapboxrace.core.xmpp.XmppChat;
 
 import javax.ejb.EJB;
-import javax.inject.Inject;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -58,7 +57,7 @@ public class OpenfireHook {
                 openFireSoapBoxCli.send(XmppChat.createSystemMessage("LOBBYID: " + getActiveLobbyId), personaEntity.getPersonaId());
                 openFireSoapBoxCli.send(XmppChat.createSystemMessage("SESSIONID: " + getEventSessionId), personaEntity.getPersonaId());
             } else {
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("You are not in event."), personaEntity.getPersonaId());
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_NOT_ON_EVENT"), personaEntity.getPersonaId());
             }
         } else {
             if (personaEntity != null && personaEntity.getUser().isAdmin()) {
