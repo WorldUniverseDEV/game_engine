@@ -60,8 +60,8 @@ public class Powerups {
         if(eventSessionId != 0L || eventSessionId != null) {
             EventSessionEntity eventSession = eventBO.findEventSessionById(eventSessionId);
 
-            if(eventSession.getNopuMode() == true) {
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("This event has enforced no powerup mode enabled."), activePersonaId);
+            if(eventSession != null && eventSession.getNopuMode() == true) {
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_MODE_ENABLED"), activePersonaId);
                 return "";
             }
         }
