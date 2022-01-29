@@ -30,11 +30,6 @@ public class RequestSessionInfo {
         return tokenSessionEntity.getEventSessionId();
     }
 
-    public void setEventSessionId(Long eventSessionId) {
-        tokenSessionEntity.setEventSessionId(eventSessionId);
-        this.setTokenSessionEntity(tokenSessionEntity);
-    }
-
     public Long getActiveLobbyId() {
         return tokenSessionEntity.getActiveLobbyId();
     }
