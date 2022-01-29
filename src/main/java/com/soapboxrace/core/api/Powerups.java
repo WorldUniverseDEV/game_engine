@@ -57,7 +57,7 @@ public class Powerups {
     public String activated(@PathParam(value = "powerupHash") Integer powerupHash, @QueryParam("targetId") Long targetId, @QueryParam("receivers") String receivers, @QueryParam("eventSessionId") Integer eventSessionId) {
         Long activePersonaId = requestSessionInfo.getActivePersonaId();
 
-        if(eventSessionId != 0) {
+        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU") && eventSessionId != 0) {
             EventSessionEntity eventSession = eventBO.findEventSessionById(requestSessionInfo.getEventSessionId());
 
             if(eventSession != null) {

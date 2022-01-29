@@ -45,17 +45,19 @@ public class OpenfireHook {
         PersonaEntity personaEntity = personaDAO.find(persona);
 
         if(command.contains("nopu")) {
-            TokenSessionEntity tokendata = tokenSessionBO.findByUserId(personaEntity.getUser().getId());
-            Long getActiveLobbyId = 0L;
-            Long getEventSessionId = 0L;
+            if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
+                TokenSessionEntity tokendata = tokenSessionBO.findByUserId(personaEntity.getUser().getId());
+                Long getActiveLobbyId = 0L;
+                Long getEventSessionId = 0L;
 
-            //check if is a null value
-            if(tokendata.getActiveLobbyId() != null) getActiveLobbyId = tokendata.getActiveLobbyId();
-            if(tokendata.getEventSessionId() != null) getEventSessionId = tokendata.getEventSessionId();
+                //check if is a null value
+                if(tokendata.getActiveLobbyId() != null) getActiveLobbyId = tokendata.getActiveLobbyId();
+                if(tokendata.getEventSessionId() != null) getEventSessionId = tokendata.getEventSessionId();
 
-            if(getActiveLobbyId != 0L) {
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("LOBBYID: " + getActiveLobbyId), personaEntity.getPersonaId());
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SESSIONID: " + getEventSessionId), personaEntity.getPersonaId());
+                if(getActiveLobbyId != 0L) {
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("LOBBYID: " + getActiveLobbyId), personaEntity.getPersonaId());
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SESSIONID: " + getEventSessionId), personaEntity.getPersonaId());
+                }
             }
         } else {
             if (personaEntity != null && personaEntity.getUser().isAdmin()) {
