@@ -57,18 +57,26 @@ public class Powerups {
     public String activated(@PathParam(value = "powerupHash") Integer powerupHash, @QueryParam("targetId") Long targetId, @QueryParam("receivers") String receivers, @QueryParam("eventSessionId") Integer eventSessionId) {
         Long activePersonaId = requestSessionInfo.getActivePersonaId();
 
-        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU") && eventSessionId != 0) {
+        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU") && requestSessionInfo.getEventSessionId() != 0) {
             EventSessionEntity eventSession = eventBO.findEventSessionById(requestSessionInfo.getEventSessionId());
 
             if(eventSession != null) {
                 if(eventSession.getNopuMode() == true) {
                     openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_MODE_ENABLED"), activePersonaId);
-                    return "";
+                } else {
+                    sendPowerup(powerupHash, targetId, receivers, activePersonaId);
                 }
+            } else {
+                sendPowerup(powerupHash, targetId, receivers, activePersonaId);
             }
+        } else {
+            sendPowerup(powerupHash, targetId, receivers, activePersonaId);
         }
 
+        return "";
+    }
 
+    public void sendPowerup(Integer powerupHash, Long targetId, String receivers, Long activePersonaId) {
         XMPP_ResponseTypePowerupActivated powerupActivatedResponse = new XMPP_ResponseTypePowerupActivated();
         XMPP_PowerupActivatedType powerupActivated = new XMPP_PowerupActivatedType();
         powerupActivated.setId(Long.valueOf(powerupHash));
@@ -90,7 +98,5 @@ public class Powerups {
         }
 
         usedPowerupBO.createPowerupRecord(requestSessionInfo.getEventSessionId(), activePersonaId, powerupHash);
-
-        return "";
     }
 }
