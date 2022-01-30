@@ -54,9 +54,17 @@ public class OpenfireHook {
                 if(tokendata.getActiveLobbyId() != null) getActiveLobbyId = tokendata.getActiveLobbyId();
                 if(tokendata.getEventSessionId() != null) getEventSessionId = tokendata.getEventSessionId();
 
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("LOBBYID: " + getActiveLobbyId), personaEntity.getPersonaId());
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SESSIONID: " + getEventSessionId), personaEntity.getPersonaId());
+
                 if(getActiveLobbyId != 0L) {
-                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("LOBBYID: " + getActiveLobbyId), personaEntity.getPersonaId());
-                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SESSIONID: " + getEventSessionId), personaEntity.getPersonaId());
+                    //Let's send a message of users that already voted
+                   
+                    /* TODO: 
+                     * 1. Get all personaids on that lobby.
+                     * 2. Actually send a message informing them about vote progress.
+                     * 3. Validate that the user voted, informing them that he does not have to re-vote.
+                    */
                 }
             }
         } else {
