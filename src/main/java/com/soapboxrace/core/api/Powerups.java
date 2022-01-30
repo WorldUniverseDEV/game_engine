@@ -15,6 +15,9 @@ import com.soapboxrace.core.jpa.PersonaEntity;
 import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
 import com.soapboxrace.jaxb.xmpp.XMPP_PowerupActivatedType;
 import com.soapboxrace.jaxb.xmpp.XMPP_ResponseTypePowerupActivated;
+
+import org.eclipse.persistence.internal.sessions.DirectCollectionChangeRecord.NULL;
+
 import com.soapboxrace.core.xmpp.XmppChat;
 
 import javax.ejb.EJB;
@@ -57,7 +60,7 @@ public class Powerups {
     public String activated(@PathParam(value = "powerupHash") Integer powerupHash, @QueryParam("targetId") Long targetId, @QueryParam("receivers") String receivers, @QueryParam("eventSessionId") Integer eventSessionId) {
         Long activePersonaId = requestSessionInfo.getActivePersonaId();
 
-        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU") && requestSessionInfo.getEventSessionId() != 0) {
+        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU") && requestSessionInfo.getEventSessionId() != null) {
             EventSessionEntity eventSession = eventBO.findEventSessionById(requestSessionInfo.getEventSessionId());
 
             if(eventSession != null) {
