@@ -16,8 +16,6 @@ import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
 import com.soapboxrace.jaxb.xmpp.XMPP_PowerupActivatedType;
 import com.soapboxrace.jaxb.xmpp.XMPP_ResponseTypePowerupActivated;
 
-import org.eclipse.persistence.internal.sessions.DirectCollectionChangeRecord.NULL;
-
 import com.soapboxrace.core.xmpp.XmppChat;
 
 import javax.ejb.EJB;
