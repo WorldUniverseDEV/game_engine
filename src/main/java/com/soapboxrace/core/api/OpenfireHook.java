@@ -76,9 +76,10 @@ public class OpenfireHook {
                     LobbyEntity lobbyEntities = lobbyDAO.findById(getActiveLobbyId);
 
                     List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
-                    List<LobbyEntrantEntity> lobbyEntrantsEntities = lobbyEntrantDAO.getVotes(getActiveLobbyId);
+                    LobbyEntrantEntity lobbyEntrantsEntities = lobbyEntrantDAO.find(getActiveLobbyId);
+                    List<LobbyEntrantEntity> lobbyEntrantsEntitiesVotes = lobbyEntrantDAO.getVotes(getActiveLobbyId);
 
-                    Integer totalVotes = lobbyEntrantsEntities.size();
+                    Integer totalVotes = lobbyEntrantsEntitiesVotes.size();
                     Integer totalUsersInLobby = lobbyEntrants.size();
                     Integer totalVotesPercentage = Math.round((totalVotes * 100.0f) / totalUsersInLobby);
 
@@ -87,6 +88,9 @@ public class OpenfireHook {
                             openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_USERVOTED," + lobbyEntrant.getPersona().getName() + "," + totalVotes + "," + totalUsersInLobby), lobbyEntrant.getPersona().getPersonaId());
                         }
                     }
+
+                    //Let's update it
+                    lobbyEntrantDAO.updateVoteByPersonaAndLobby(personaEntity, lobbyEntities);
                 } else if(getActiveLobbyId != 0L && getEventSessionId != 0) {
                     if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_WARNING_ONEVENT")) {
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ONEVENT"), personaEntity.getPersonaId());
