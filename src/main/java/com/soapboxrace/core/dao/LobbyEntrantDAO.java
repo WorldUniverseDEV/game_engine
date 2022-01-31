@@ -37,7 +37,7 @@ public class LobbyEntrantDAO extends LongKeyedDAO<LobbyEntrantEntity> {
     }
 
     public void updateVoteByPersonaAndLobby(PersonaEntity personaEntity, LobbyEntity lobbyEntity) {
-        Query query = entityManager.createNamedQuery("LobbyEntrantEntity.updateByPersonaAndLobby");
+        Query query = entityManager.createNamedQuery("LobbyEntrantEntity.updateVoteByPersonaAndLobby");
         query.setParameter("persona", personaEntity);
         query.setParameter("lobby", lobbyEntity);
         query.executeUpdate();
