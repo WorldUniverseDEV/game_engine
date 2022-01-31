@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlTransient;
                 "obj.persona = :persona"), //
         @NamedQuery(name = "LobbyEntrantEntity.deleteByPersonaAndLobby", query = "DELETE FROM LobbyEntrantEntity obj WHERE " +
                 "obj.persona = :persona and obj.lobby = :lobby"), //
-        @NamedQuery(name = "LobbyEntrantEntity.getVotes", query = "SELECT obj FROM LobbyEntrantEntity obj WHERE obj.NOPU = 1 and obj.lobby = :lobby")
+        @NamedQuery(name = "LobbyEntrantEntity.getVotes", query = "SELECT obj FROM LobbyEntrantEntity obj WHERE obj.nopuMode = 1 and obj.lobby = :lobby")
 })
 public class LobbyEntrantEntity implements Comparable<LobbyEntrantEntity> {
 
