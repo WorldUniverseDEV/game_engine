@@ -76,8 +76,7 @@ public class OpenfireHook {
                     LobbyEntity lobbyEntities = lobbyDAO.findById(getActiveLobbyId);
 
                     List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
-                    LobbyEntrantEntity lobbyEntrantsEntities = lobbyEntrantDAO.find(getActiveLobbyId);
-                    List<LobbyEntrantEntity> lobbyEntrantsEntitiesVotes = lobbyEntrantDAO.getVotes(getActiveLobbyId);
+                    List<LobbyEntrantEntity> lobbyEntrantsEntitiesVotes = lobbyEntrantDAO.getVotes(lobbyEntities);
 
                     Integer totalVotes = lobbyEntrantsEntitiesVotes.size();
                     Integer totalUsersInLobby = lobbyEntrants.size();
