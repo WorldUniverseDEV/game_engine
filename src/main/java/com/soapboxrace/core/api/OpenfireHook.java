@@ -84,7 +84,7 @@ public class OpenfireHook {
 
                     if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_VOTEMESSAGES")) {
                         for (LobbyEntrantEntity lobbyEntrant : lobbyEntrants) {
-                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_USERVOTED," + lobbyEntrant.getPersona().getName() + "," + totalVotes + "," + totalUsersInLobby), personaEntity.getPersonaId());
+                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_USERVOTED," + lobbyEntrant.getPersona().getName() + "," + totalVotes + "," + totalUsersInLobby), lobbyEntrant.getPersona().getPersonaId());
                         }
                     }
                 } else if(getActiveLobbyId != 0L && getEventSessionId != 0) {
