@@ -76,8 +76,13 @@ public class OpenfireHook {
                     Integer totalUsersInLobby = lobbyEntrants.size();
                     Integer totalVotesPercentage = Math.round((totalVotes * 100.0f) / totalUsersInLobby);
 
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("USERS HERE: " + totalUsersInLobby), personaEntity.getPersonaId());
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("VOTES HERE: " + totalVotes), personaEntity.getPersonaId());
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("PERC HERE: " + totalVotesPercentage), personaEntity.getPersonaId());
+
                     if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_VOTEMESSAGES")) {
                         for (LobbyEntrantEntity lobbyEntrant : lobbyEntrants) {
+                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("DEBUG PID: " + lobbyEntrant.getPersona().getPersonaId()), personaEntity.getPersonaId());
                             openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_USERVOTED," + lobbyEntrant.getPersona().getName() + "," + totalVotes + "," + totalUsersInLobby), lobbyEntrant.getPersona().getPersonaId());
                         }
                     }
