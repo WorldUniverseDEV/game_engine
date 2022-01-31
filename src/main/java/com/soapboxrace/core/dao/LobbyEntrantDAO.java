@@ -43,6 +43,15 @@ public class LobbyEntrantDAO extends LongKeyedDAO<LobbyEntrantEntity> {
         query.executeUpdate();
     }
 
+    public Boolean getVoteStatus(PersonaEntity personaEntity, LobbyEntity lobbyEntity) {
+        TypedQuery<LobbyEntrantEntity> query = entityManager.createNamedQuery("LobbyEntrantEntity.getVoteStatus", LobbyEntrantEntity.class);
+        query.setParameter("persona", personaEntity);
+        query.setParameter("lobby", lobbyEntity);
+
+        LobbyEntrantEntity resultList = query.getSingleResult();
+        return resultList.getNopuMode();
+    }
+
     public List<LobbyEntrantEntity> getVotes(LobbyEntity lobby) {
         TypedQuery<LobbyEntrantEntity> query = entityManager.createNamedQuery("LobbyEntrantEntity.getVotes", LobbyEntrantEntity.class);
         query.setParameter("lobby", lobby);

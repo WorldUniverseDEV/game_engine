@@ -60,20 +60,21 @@ public class OpenfireHook {
                 if(tokendata.getActiveLobbyId() != null) getActiveLobbyId = tokendata.getActiveLobbyId();
                 if(tokendata.getEventSessionId() != null) getEventSessionId = tokendata.getEventSessionId();
 
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("LOBBYID: " + getActiveLobbyId), personaEntity.getPersonaId());
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SESSIONID: " + getEventSessionId), personaEntity.getPersonaId());
-
                 if(getActiveLobbyId != 0L && getEventSessionId == 0) { //WE'RE ON LOBBY
                     //Let's send a message of users that already voted
                    
                     /* TODO: 
                      * 1. Get all personaids on that lobby. [DONE]
                      * 2. Actually send a message informing them about vote progress. [DONE]
-                     * 3. Validate that the user voted, informing them that he does not have to re-vote.
+                     * 3. Validate that the user voted, informing them that he does not have to re-vote. [DONE]
                     */
+                    
+                    //Let's update it first
+                    LobbyEntity lobbyEntitiesTemporary = lobbyDAO.findById(getActiveLobbyId);
+                    lobbyEntrantDAO.updateVoteByPersonaAndLobby(personaEntity, lobbyEntitiesTemporary);
 
+                    //Show votes.
                     LobbyEntity lobbyEntities = lobbyDAO.findById(getActiveLobbyId);
-
                     List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
                     List<LobbyEntrantEntity> lobbyEntrantsEntitiesVotes = lobbyEntrantDAO.getVotes(lobbyEntities);
 
@@ -81,19 +82,17 @@ public class OpenfireHook {
                     Integer totalUsersInLobby = lobbyEntrants == null ? 0 : lobbyEntrants.size();
                     Integer totalVotesPercentage = Math.round((totalVotes * 100.0f) / totalUsersInLobby);
 
-                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("USERS HERE: " + totalUsersInLobby), personaEntity.getPersonaId());
-                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("VOTES HERE: " + totalVotes), personaEntity.getPersonaId());
-                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("PERC HERE: " + totalVotesPercentage), personaEntity.getPersonaId());
-
-                    if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_VOTEMESSAGES")) {
-                        for (LobbyEntrantEntity lobbyEntrant : lobbyEntrants) {
-                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("DEBUG PID: " + lobbyEntrant.getPersona().getPersonaId()), personaEntity.getPersonaId());
-                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_USERVOTED," + lobbyEntrant.getPersona().getName() + "," + totalVotes + "," + totalUsersInLobby), lobbyEntrant.getPersona().getPersonaId());
+                    if(totalUsersInLobby >= 2) {
+                        if(lobbyEntrantDAO.getVoteStatus(personaEntity, lobbyEntitiesTemporary)) {
+                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ALREADYVOTED"), personaEntity.getPersonaId());
+                        } else {
+                            if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_VOTEMESSAGES")) {
+                                for (LobbyEntrantEntity lobbyEntrant : lobbyEntrants) {
+                                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_USERVOTED," + personaEntity.getName() + "," + totalVotes + "," + totalUsersInLobby), lobbyEntrant.getPersona().getPersonaId());
+                                }
+                            }
                         }
                     }
-
-                    //Let's update it
-                    lobbyEntrantDAO.updateVoteByPersonaAndLobby(personaEntity, lobbyEntities);
                 } else if(getActiveLobbyId != 0L && getEventSessionId != 0) {
                     if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_WARNING_ONEVENT")) {
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ONEVENT"), personaEntity.getPersonaId());

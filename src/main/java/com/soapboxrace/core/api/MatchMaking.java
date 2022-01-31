@@ -95,6 +95,8 @@ public class MatchMaking {
     @Produces(MediaType.APPLICATION_XML)
     public String leaveQueue() {
         matchmakingBO.removePlayerFromQueue(requestSessionInfo.getActivePersonaId());
+        tokenSessionBO.setEventSessionId(requestSessionInfo.getTokenSessionEntity(), null);
+        tokenSessionBO.setActiveLobbyId(requestSessionInfo.getTokenSessionEntity(), null);
         return "";
     }
 

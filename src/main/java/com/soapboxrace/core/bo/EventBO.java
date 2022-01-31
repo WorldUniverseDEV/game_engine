@@ -58,6 +58,10 @@ public class EventBO {
     }
 
     public EventSessionEntity createEventSession(TokenSessionEntity tokenSessionEntity, int eventId) {
+        return createEventSession(tokenSessionEntity, eventId, false);
+    }
+
+    public EventSessionEntity createEventSession(TokenSessionEntity tokenSessionEntity, int eventId, Boolean nopuMode) {
         Objects.requireNonNull(tokenSessionEntity);
 
         EventEntity eventEntity = eventDao.find(eventId);
@@ -81,6 +85,7 @@ public class EventBO {
         EventSessionEntity eventSessionEntity = new EventSessionEntity();
         eventSessionEntity.setEvent(eventEntity);
         eventSessionEntity.setStarted(System.currentTimeMillis());
+        eventSessionEntity.setNopuMode(nopuMode);
         eventSessionDao.insert(eventSessionEntity);
         return eventSessionEntity;
     }
