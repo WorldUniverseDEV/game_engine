@@ -48,6 +48,11 @@ public class OpenfireHook {
         if(command.contains("nopu")) {
             if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
                 TokenSessionEntity tokendata = tokenSessionBO.findByUserId(personaEntity.getUser().getId());
+
+                if(tokendata == null) {
+                    return Response.status(Response.Status.BAD_REQUEST).entity("can't find valid token for user").build();
+                }
+
                 Long getActiveLobbyId = 0L;
                 Long getEventSessionId = 0L;
 
