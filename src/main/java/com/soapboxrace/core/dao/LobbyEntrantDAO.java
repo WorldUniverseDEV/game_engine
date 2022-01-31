@@ -13,6 +13,8 @@ import com.soapboxrace.core.jpa.PersonaEntity;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 @Stateless
 public class LobbyEntrantDAO extends LongKeyedDAO<LobbyEntrantEntity> {
@@ -32,5 +34,13 @@ public class LobbyEntrantDAO extends LongKeyedDAO<LobbyEntrantEntity> {
         query.setParameter("persona", personaEntity);
         query.setParameter("lobby", lobbyEntity);
         query.executeUpdate();
+    }
+
+    public List<LobbyEntrantEntity> getVotes(Long lobbyId) {
+        TypedQuery<LobbyEntrantEntity> query = entityManager.createNamedQuery("LobbyEntrantEntity.getVotes", LobbyEntrantEntity.class);
+        query.setParameter("lobbyId", lobbyId);
+
+        List<LobbyEntrantEntity> resultList = query.getResultList();
+        return !resultList.isEmpty() ? resultList : null;
     }
 }
