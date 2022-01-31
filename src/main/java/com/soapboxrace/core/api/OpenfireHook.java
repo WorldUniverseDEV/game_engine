@@ -42,13 +42,7 @@ public class OpenfireHook {
     private LobbyEntrantDAO lobbyEntrantDAO;
 
     @POST
-    public Response openfireHook(@HeaderParam("Authorization") String token, @QueryParam("cmd") String command, @QueryParam("pid") long persona, @QueryParam("webhook") Boolean webHook) {
-        String correctToken = parameterBO.getStrParam("OPENFIRE_TOKEN");
-
-        if (token == null || !MessageDigest.isEqual(token.getBytes(), correctToken.getBytes())) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("invalid token").build();
-        }
-        
+    public Response openfireHook(@HeaderParam("Authorization") String token, @QueryParam("cmd") String command, @QueryParam("pid") long persona, @QueryParam("webhook") Boolean webHook) {        
         PersonaEntity personaEntity = personaDAO.find(persona);
 
         if(command.contains("nopu")) {
@@ -101,6 +95,12 @@ public class OpenfireHook {
                 }
             }
         } else {
+            String correctToken = parameterBO.getStrParam("OPENFIRE_TOKEN");
+
+            if (token == null || !MessageDigest.isEqual(token.getBytes(), correctToken.getBytes())) {
+                return Response.status(Response.Status.BAD_REQUEST).entity("invalid token").build();
+            }
+
             if (personaEntity != null && personaEntity.getUser().isAdmin()) {
                 Boolean sendOrNot = Boolean.valueOf(webHook);
                 adminBO.sendChatCommand(persona, command, personaEntity.getName(), sendOrNot);
