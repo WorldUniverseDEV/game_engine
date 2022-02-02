@@ -69,11 +69,6 @@ public class OpenfireHook {
                      * 3. Validate that the user voted, informing them that he does not have to re-vote. [DONE]
                     */
                     
-                    //Let's update it first
-                    LobbyEntity lobbyEntitiesTemporary = lobbyDAO.findById(getActiveLobbyId);
-                    lobbyEntrantDAO.updateVoteByPersonaAndLobby(personaEntity, lobbyEntitiesTemporary);
-
-                    //Show votes.
                     LobbyEntity lobbyEntities = lobbyDAO.findById(getActiveLobbyId);
                     List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
                     List<LobbyEntrantEntity> lobbyEntrantsEntitiesVotes = lobbyEntrantDAO.getVotes(lobbyEntities);
@@ -83,9 +78,11 @@ public class OpenfireHook {
                     Integer totalVotesPercentage = Math.round((totalVotes * 100.0f) / totalUsersInLobby);
 
                     if(totalUsersInLobby >= 2) {
-                        if(lobbyEntrantDAO.getVoteStatus(personaEntity, lobbyEntitiesTemporary)) {
+                        if(lobbyEntrantDAO.getVoteStatus(personaEntity, lobbyEntities)) {
                             openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ALREADYVOTED"), personaEntity.getPersonaId());
                         } else {
+                            lobbyEntrantDAO.updateVoteByPersonaAndLobby(personaEntity, lobbyEntities);
+
                             if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_VOTEMESSAGES")) {
                                 for (LobbyEntrantEntity lobbyEntrant : lobbyEntrants) {
                                     openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_USERVOTED," + personaEntity.getName() + "," + totalVotes + "," + totalUsersInLobby), lobbyEntrant.getPersona().getPersonaId());
