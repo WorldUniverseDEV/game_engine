@@ -14,6 +14,8 @@ import com.soapboxrace.core.engine.EngineException;
 import com.soapboxrace.core.engine.EngineExceptionCode;
 import com.soapboxrace.core.jpa.*;
 import com.soapboxrace.core.xmpp.OpenFireRestApiCli;
+import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
+import com.soapboxrace.core.xmpp.XmppChat;
 import com.soapboxrace.jaxb.http.ArrayOfLobbyEntrantInfo;
 import com.soapboxrace.jaxb.http.LobbyCountdown;
 import com.soapboxrace.jaxb.http.LobbyEntrantInfo;
@@ -21,6 +23,7 @@ import com.soapboxrace.jaxb.http.LobbyInfo;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -50,10 +53,16 @@ public class LobbyBO {
     private OpenFireRestApiCli openFireRestApiCli;
 
     @EJB
+    private OpenFireSoapBoxCli openFireSoapBoxCli;
+
+    @EJB
     private LobbyCountdownBO lobbyCountdownBO;
 
     @EJB
     private LobbyMessagingBO lobbyMessagingBO;
+
+    @EJB
+    private ParameterBO parameterBO;
 
     public void joinFastLobby(Long personaId, int carClassHash) {
         PersonaEntity personaEntity = personaDao.find(personaId);
@@ -259,6 +268,18 @@ public class LobbyBO {
         lobbyInfoType.setEventId(eventId);
         lobbyInfoType.setLobbyInviteId(lobbyInviteId);
         lobbyInfoType.setLobbyId(lobbyInviteId);
+
+        //NOPU
+        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
+            new java.util.Timer().schedule( 
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("This is a test."), personaEntity.getPersonaId());
+                    }
+                }, (lobbyCountdown.getLobbyCountdownInMilliseconds()-6000)
+            );
+        }
 
         return lobbyInfoType;
     }
