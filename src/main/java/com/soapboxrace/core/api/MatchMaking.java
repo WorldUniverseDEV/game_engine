@@ -156,7 +156,7 @@ public class MatchMaking {
         LobbyEntity lobbyInformation = lobbyDAO.findById(lobbyInviteId);
 
         if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
-            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_JOIN_MSG"), activePersonaId);
+            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_JOIN_MSG," + parameterBO.getStrParam("SBRWR_NOPU_REQUIREDPERCENT")), activePersonaId);
         }
 
 		if(activePersonaId.equals(lobbyInformation.getPersonaId()) && lobbyInformation.getIsPrivate() == false) {
