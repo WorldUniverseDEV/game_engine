@@ -8,6 +8,7 @@ import com.soapboxrace.core.jpa.PersonaEntity;
 import com.soapboxrace.core.jpa.TokenSessionEntity;
 import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
 import com.soapboxrace.core.xmpp.XmppChat;
+import java.time.OffsetDateTime;
 
 import javax.ejb.EJB;
 import javax.ws.rs.HeaderParam;
@@ -56,20 +57,17 @@ public class OpenfireHook {
                 Long getActiveLobbyId = 0L;
                 Long getEventSessionId = 0L;
 
-                //check if is a null value
                 if(tokendata.getActiveLobbyId() != null) getActiveLobbyId = tokendata.getActiveLobbyId();
                 if(tokendata.getEventSessionId() != null) getEventSessionId = tokendata.getEventSessionId();
 
-                if(getActiveLobbyId != 0L && getEventSessionId == 0) { //WE'RE ON LOBBY
-                    //Let's send a message of users that already voted
-                   
-                    /* TODO: 
-                     * 1. Get all personaids on that lobby. [DONE]
-                     * 2. Actually send a message informing them about vote progress. [DONE]
-                     * 3. Validate that the user voted, informing them that he does not have to re-vote. [DONE]
-                    */
-                    
+                if(getActiveLobbyId != 0L && getEventSessionId == 0) {
                     LobbyEntity lobbyEntities = lobbyDAO.findById(getActiveLobbyId);
+
+                    if(lobbyEntities.getLobbyCountdownInMilliseconds(lobbyEntities.getEvent().getLobbyCountdownTime()) <= 6000) {
+                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_VOTEENDED"), personaEntity.getPersonaId());
+                        return Response.noContent().build();
+                    }
+
                     List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
                     List<LobbyEntrantEntity> lobbyEntrantsEntitiesVotes = lobbyEntrantDAO.getVotes(lobbyEntities);
 
