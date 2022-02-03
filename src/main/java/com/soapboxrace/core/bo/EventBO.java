@@ -98,11 +98,13 @@ public class EventBO {
         //NOPU
         Boolean nopuMode = false;
         openFireSoapBoxCli.send(XmppChat.createSystemMessage("DEBUG EVENTBO.JAVA - LINE 100: " + tokenSessionEntity.getActiveLobbyId()), activePersonaId);
-        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU") && (!tokenSessionEntity.getActiveLobbyId().equals(0L) || tokenSessionEntity.getActiveLobbyId() != null)) {
-            LobbyEntity lobbyEntities = lobbyDao.find(tokenSessionEntity.getActiveLobbyId());
-            List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
-            List<LobbyEntrantEntity> lobbyEntrantsEntitiesVotes = lobbyEntrantDao.getVotes(lobbyEntities);
-            nopuMode = ((Math.round((lobbyEntrantsEntitiesVotes.size() * 100.0f) / lobbyEntrants.size())) >= parameterBO.getIntParam("SBRWR_NOPU_REQUIREDPERCENT")) ? false : true;
+        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
+            if(tokenSessionEntity.getActiveLobbyId() != null) {
+                LobbyEntity lobbyEntities = lobbyDao.find(tokenSessionEntity.getActiveLobbyId());
+                List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
+                List<LobbyEntrantEntity> lobbyEntrantsEntitiesVotes = lobbyEntrantDao.getVotes(lobbyEntities);
+                nopuMode = ((Math.round((lobbyEntrantsEntitiesVotes.size() * 100.0f) / lobbyEntrants.size())) >= parameterBO.getIntParam("SBRWR_NOPU_REQUIREDPERCENT")) ? false : true;
+            }
         }
 
         openFireSoapBoxCli.send(XmppChat.createSystemMessage("DEBUG EVENTBO.JAVA - LINE 108: " + nopuMode), activePersonaId);
