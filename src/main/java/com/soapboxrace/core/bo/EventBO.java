@@ -102,8 +102,7 @@ public class EventBO {
             if(tokenSessionEntity.getActiveLobbyId() != null) {
                 LobbyEntity lobbyEntities = lobbyDao.find(tokenSessionEntity.getActiveLobbyId());
                 List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
-                List<LobbyEntrantEntity> lobbyEntrantsEntitiesVotes = lobbyEntrantDao.getVotes(lobbyEntities);
-                nopuMode = ((Math.round((lobbyEntrantsEntitiesVotes.size() * 100.0f) / lobbyEntrants.size())) >= parameterBO.getIntParam("SBRWR_NOPU_REQUIREDPERCENT")) ? false : true;
+                nopuMode = ((Math.round((lobbyEntrantDao.getVotes(lobbyEntities) * 100.0f) / lobbyEntrants.size())) >= parameterBO.getIntParam("SBRWR_NOPU_REQUIREDPERCENT")) ? false : true;
             }
         }
 

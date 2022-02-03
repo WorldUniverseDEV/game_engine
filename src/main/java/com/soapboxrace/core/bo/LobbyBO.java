@@ -279,10 +279,9 @@ public class LobbyBO {
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("DEBUG LOBBYBO.JAVA - LINE 278: " + userCheck.getNopuMode()), personaEntity.getPersonaId());
                         if(userCheck != null) {
                             List<LobbyEntrantEntity> lobbyEntrants = lobbyEntity.getEntrants();
-                            List<LobbyEntrantEntity> lobbyEntrantsEntitiesVotes = lobbyEntrantDao.getVotes(lobbyEntity);
 
-                            Integer totalVotes = lobbyEntrantsEntitiesVotes == null ? 1 : lobbyEntrantsEntitiesVotes.size();
-                            Integer totalUsersInLobby = lobbyEntrants == null ? 1 : lobbyEntrants.size();
+                            Integer totalVotes = lobbyEntrantDao.getVotes(lobbyEntity);
+                            Integer totalUsersInLobby = lobbyEntrants.size();
                             Integer totalVotesPercentage = Math.round((totalVotes * 100.0f) / totalUsersInLobby);
 
                             openFireSoapBoxCli.send(XmppChat.createSystemMessage("DEBUG LOBBYBO.JAVA - LINE 286: " + totalVotesPercentage), personaEntity.getPersonaId());
