@@ -7,6 +7,8 @@
 package com.soapboxrace.core.bo;
 
 import com.soapboxrace.core.dao.EventDAO;
+import com.soapboxrace.core.dao.LobbyDAO;
+import com.soapboxrace.core.dao.LobbyEntrantDAO;
 import com.soapboxrace.core.dao.EventDataDAO;
 import com.soapboxrace.core.dao.EventSessionDAO;
 import com.soapboxrace.core.dao.PersonaDAO;
@@ -34,6 +36,12 @@ public class EventBO {
 
     @EJB
     private PersonaDAO personaDao;
+
+    @EJB
+    private LobbyDAO lobbyDao;
+
+    @EJB
+    private LobbyEntrantDAO lobbyEntrantDao;
 
     @EJB
     private PersonaBO personaBO;
@@ -84,7 +92,10 @@ public class EventBO {
         //NOPU
         Boolean nopuMode = false;
         if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
-            //TODO: Check if PU has to be enabled or not
+            LobbyEntity lobbyEntities = lobbyDao.find(tokenSessionEntity.getActiveLobbyId());
+            List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
+            List<LobbyEntrantEntity> lobbyEntrantsEntitiesVotes = lobbyEntrantDao.getVotes(lobbyEntities);
+            nopuMode = ((Math.round((lobbyEntrantsEntitiesVotes.size() * 100.0f) / lobbyEntrants.size())) >= parameterBO.getIntParam("SBRWR_NOPU_REQUIREDPERCENT")) ? false : true;
         }
 
         EventSessionEntity eventSessionEntity = new EventSessionEntity();
