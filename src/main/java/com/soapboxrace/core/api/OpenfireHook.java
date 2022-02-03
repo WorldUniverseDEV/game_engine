@@ -83,7 +83,6 @@ public class OpenfireHook {
 
                     Integer totalVotes = lobbyEntrantsEntitiesVotes == null ? 1 : lobbyEntrantsEntitiesVotes.size()+1;
                     Integer totalUsersInLobby = lobbyEntrants == null ? 1 : lobbyEntrants.size();
-                    Integer totalVotesPercentage = Math.round((totalVotes * 100.0f) / totalUsersInLobby);
 
                     if(totalUsersInLobby >= 2) {
                         if(lobbyEntrantDAO.getVoteStatus(personaEntity, lobbyEntities).getNopuMode()) {

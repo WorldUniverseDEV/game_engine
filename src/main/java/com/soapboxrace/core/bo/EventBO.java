@@ -15,12 +15,15 @@ import com.soapboxrace.core.dao.PersonaDAO;
 import com.soapboxrace.core.engine.EngineException;
 import com.soapboxrace.core.engine.EngineExceptionCode;
 import com.soapboxrace.core.jpa.*;
+import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
+import com.soapboxrace.core.xmpp.XmppChat;
 import org.hibernate.Hibernate;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Objects;
+
 
 @Stateless
 public class EventBO {
@@ -48,6 +51,9 @@ public class EventBO {
 
     @EJB
     private ParameterBO parameterBO;
+
+    @EJB
+    private OpenFireSoapBoxCli openFireSoapBoxCli;
 
     public List<EventEntity> availableAtLevel(Long personaId) {
         PersonaEntity personaEntity = personaDao.find(personaId);
@@ -91,12 +97,15 @@ public class EventBO {
 
         //NOPU
         Boolean nopuMode = false;
-        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
+        openFireSoapBoxCli.send(XmppChat.createSystemMessage("DEBUG EVENTBO.JAVA - LINE 100: " + tokenSessionEntity.getActiveLobbyId()), activePersonaId);
+        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU") && !tokenSessionEntity.getActiveLobbyId().equals(0L)) {
             LobbyEntity lobbyEntities = lobbyDao.find(tokenSessionEntity.getActiveLobbyId());
             List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
             List<LobbyEntrantEntity> lobbyEntrantsEntitiesVotes = lobbyEntrantDao.getVotes(lobbyEntities);
             nopuMode = ((Math.round((lobbyEntrantsEntitiesVotes.size() * 100.0f) / lobbyEntrants.size())) >= parameterBO.getIntParam("SBRWR_NOPU_REQUIREDPERCENT")) ? false : true;
         }
+
+        openFireSoapBoxCli.send(XmppChat.createSystemMessage("DEBUG EVENTBO.JAVA - LINE 108: " + nopuMode), activePersonaId);
 
         EventSessionEntity eventSessionEntity = new EventSessionEntity();
         eventSessionEntity.setEvent(eventEntity);
