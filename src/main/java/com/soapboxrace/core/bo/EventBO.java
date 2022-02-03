@@ -98,7 +98,7 @@ public class EventBO {
         //NOPU
         Boolean nopuMode = false;
         openFireSoapBoxCli.send(XmppChat.createSystemMessage("DEBUG EVENTBO.JAVA - LINE 100: " + tokenSessionEntity.getActiveLobbyId()), activePersonaId);
-        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU") && !tokenSessionEntity.getActiveLobbyId().equals(0L)) {
+        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU") && (!tokenSessionEntity.getActiveLobbyId().equals(0L) || tokenSessionEntity.getActiveLobbyId() != null)) {
             LobbyEntity lobbyEntities = lobbyDao.find(tokenSessionEntity.getActiveLobbyId());
             List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
             List<LobbyEntrantEntity> lobbyEntrantsEntitiesVotes = lobbyEntrantDao.getVotes(lobbyEntities);
