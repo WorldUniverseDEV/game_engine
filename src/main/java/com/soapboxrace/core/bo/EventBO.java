@@ -38,6 +38,9 @@ public class EventBO {
     @EJB
     private PersonaBO personaBO;
 
+    @EJB
+    private ParameterBO parameterBO;
+
     public List<EventEntity> availableAtLevel(Long personaId) {
         PersonaEntity personaEntity = personaDao.find(personaId);
         return eventDao.findByLevel(personaEntity.getLevel());
@@ -58,10 +61,6 @@ public class EventBO {
     }
 
     public EventSessionEntity createEventSession(TokenSessionEntity tokenSessionEntity, int eventId) {
-        return createEventSession(tokenSessionEntity, eventId, false);
-    }
-
-    public EventSessionEntity createEventSession(TokenSessionEntity tokenSessionEntity, int eventId, Boolean nopuMode) {
         Objects.requireNonNull(tokenSessionEntity);
 
         EventEntity eventEntity = eventDao.find(eventId);
@@ -80,6 +79,12 @@ public class EventBO {
         if (carEntity.getCarClassHash() == 0 || (eventEntity.getCarClassHash() != 607077938 && carEntity.getCarClassHash() != eventEntity.getCarClassHash())) {
             // The client UI does not allow you to join events outside your current car's class
             throw new EngineException(EngineExceptionCode.CarDataInvalid, false);
+        }
+
+        //NOPU
+        Boolean nopuMode = false;
+        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
+            //TODO: Check if PU has to be enabled or not
         }
 
         EventSessionEntity eventSessionEntity = new EventSessionEntity();

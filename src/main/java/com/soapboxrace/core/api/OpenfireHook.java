@@ -8,7 +8,6 @@ import com.soapboxrace.core.jpa.PersonaEntity;
 import com.soapboxrace.core.jpa.TokenSessionEntity;
 import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
 import com.soapboxrace.core.xmpp.XmppChat;
-import java.time.OffsetDateTime;
 
 import javax.ejb.EJB;
 import javax.ws.rs.HeaderParam;
@@ -63,6 +62,17 @@ public class OpenfireHook {
                 if(getActiveLobbyId != 0L && getEventSessionId == 0) {
                     LobbyEntity lobbyEntities = lobbyDAO.findById(getActiveLobbyId);
 
+                    //Disable command execution if lobby was not found
+                    if(lobbyEntities == null) {
+                        return Response.noContent().build();
+                    }
+
+                    //Disable command execution for meetingplace and drag events
+                    if(lobbyEntities.getEvent().getEventModeId() == 19 || lobbyEntities.getEvent().getEventModeId() == 22) {
+                        return Response.noContent().build();
+                    }
+
+                    //Disable command if join time is less than 6 seconds
                     if(lobbyEntities.getLobbyCountdownInMilliseconds(lobbyEntities.getEvent().getLobbyCountdownTime()) <= 6000) {
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_VOTEENDED"), personaEntity.getPersonaId());
                         return Response.noContent().build();
@@ -76,7 +86,7 @@ public class OpenfireHook {
                     Integer totalVotesPercentage = Math.round((totalVotes * 100.0f) / totalUsersInLobby);
 
                     if(totalUsersInLobby >= 2) {
-                        if(lobbyEntrantDAO.getVoteStatus(personaEntity, lobbyEntities)) {
+                        if(lobbyEntrantDAO.getVoteStatus(personaEntity, lobbyEntities).getNopuMode()) {
                             openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ALREADYVOTED"), personaEntity.getPersonaId());
                         } else {
                             lobbyEntrantDAO.updateVoteByPersonaAndLobby(personaEntity, lobbyEntities);

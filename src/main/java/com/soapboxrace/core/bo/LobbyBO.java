@@ -275,7 +275,21 @@ public class LobbyBO {
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
-                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("This is a test."), personaEntity.getPersonaId());
+                        LobbyEntrantEntity userCheck = lobbyEntrantDao.getVoteStatus(personaEntity, lobbyEntity);
+                        if(userCheck != null && userCheck.getLobby().getId() == lobbyEntity.getId()) {
+                            List<LobbyEntrantEntity> lobbyEntrants = lobbyEntity.getEntrants();
+                            List<LobbyEntrantEntity> lobbyEntrantsEntitiesVotes = lobbyEntrantDao.getVotes(lobbyEntity);
+
+                            Integer totalVotes = lobbyEntrantsEntitiesVotes == null ? 1 : lobbyEntrantsEntitiesVotes.size();
+                            Integer totalUsersInLobby = lobbyEntrants == null ? 1 : lobbyEntrants.size();
+                            Integer totalVotesPercentage = Math.round((totalVotes * 100.0f) / totalUsersInLobby);
+
+                            if(totalVotesPercentage >= parameterBO.getIntParam("SBRWR_NOPU_REQUIREDPERCENT")) {
+                                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_INFO_NOTENOUGHVOTES"), personaEntity.getPersonaId());
+                            } else {
+                                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_INFO_SUCCESS"), personaEntity.getPersonaId());
+                            }
+                        }
                     }
                 }, (lobbyCountdown.getLobbyCountdownInMilliseconds()-6000)
             );
