@@ -269,23 +269,18 @@ public class LobbyBO {
         lobbyInfoType.setLobbyInviteId(lobbyInviteId);
         lobbyInfoType.setLobbyId(lobbyInviteId);
 
-        //NOPU
         if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
             new java.util.Timer().schedule( 
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
                         LobbyEntrantEntity userCheck = lobbyEntrantDao.getVoteStatus(personaEntity, lobbyEntity);
-                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("DEBUG LOBBYBO.JAVA - LINE 278: " + userCheck.getNopuMode()), personaEntity.getPersonaId());
                         if(userCheck != null) {
                             List<LobbyEntrantEntity> lobbyEntrants = lobbyEntity.getEntrants();
 
                             Integer totalVotes = lobbyEntrantDao.getVotes(lobbyEntity);
                             Integer totalUsersInLobby = lobbyEntrants.size();
                             Integer totalVotesPercentage = Math.round((totalVotes * 100.0f) / totalUsersInLobby);
-
-                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("DEBUG LOBBYBO.JAVA - LINE 286: " + totalVotesPercentage), personaEntity.getPersonaId());
-                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("DEBUG LOBBYBO.JAVA - LINE 286: " + parameterBO.getIntParam("SBRWR_NOPU_REQUIREDPERCENT")), personaEntity.getPersonaId());
                             
                             if(totalVotesPercentage >= parameterBO.getIntParam("SBRWR_NOPU_REQUIREDPERCENT")) {
                                 openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_INFO_NOTENOUGHVOTES"), personaEntity.getPersonaId());

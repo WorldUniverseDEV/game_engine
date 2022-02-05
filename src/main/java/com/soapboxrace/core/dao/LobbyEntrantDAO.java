@@ -52,10 +52,10 @@ public class LobbyEntrantDAO extends LongKeyedDAO<LobbyEntrantEntity> {
         return !resultList.isEmpty() ? resultList.get(0) : null;
     }
 
-    public Integer getVotes(LobbyEntity lobby) {
-        TypedQuery<Integer> query = entityManager.createNamedQuery("LobbyEntrantEntity.getVotes", Integer.class);
+    public int getVotes(LobbyEntity lobby) {
+        TypedQuery<Long> query = entityManager.createNamedQuery("LobbyEntrantEntity.getVotes", Long.class);
         query.setParameter("lobby", lobby);
 
-        return query.getSingleResult();
+        return query.getSingleResult().intValue();
     }
 }
