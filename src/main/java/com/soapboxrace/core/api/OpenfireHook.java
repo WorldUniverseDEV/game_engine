@@ -72,8 +72,8 @@ public class OpenfireHook {
                         return Response.noContent().build();
                     }
 
-                    //Disable command if join time is less than 6 seconds
-                    if(lobbyEntities.getLobbyCountdownInMilliseconds(lobbyEntities.getEvent().getLobbyCountdownTime()) <= 6000) {
+                    //Disable command if join time is less than 5 seconds
+                    if(lobbyEntities.getLobbyCountdownInMilliseconds(lobbyEntities.getEvent().getLobbyCountdownTime()) <= 5000) {
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_VOTEENDED"), personaEntity.getPersonaId());
                         return Response.noContent().build();
                     }

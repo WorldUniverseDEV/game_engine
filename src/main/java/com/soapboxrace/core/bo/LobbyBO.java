@@ -293,7 +293,7 @@ public class LobbyBO {
                             }
                         }
                     }
-                }, (lobbyCountdown.getLobbyCountdownInMilliseconds()-6000)
+                }, (lobbyCountdown.getLobbyCountdownInMilliseconds()-5000)
             );
         }
 
