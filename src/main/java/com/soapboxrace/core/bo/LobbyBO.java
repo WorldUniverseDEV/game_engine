@@ -274,7 +274,11 @@ public class LobbyBO {
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
+                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("LOBBYID: " + lobbyInviteId), personaEntity.getPersonaId());
+                        LobbyEntity lobbyEntity = lobbyDao.find(lobbyInviteId);
+                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("EVENTNAME: " + lobbyEntity.getEvent().getName()), personaEntity.getPersonaId());
                         LobbyEntrantEntity userCheck = lobbyEntrantDao.getVoteStatus(personaEntity, lobbyEntity);
+
                         if(userCheck != null) {
                             List<LobbyEntrantEntity> lobbyEntrants = lobbyEntity.getEntrants();
 
