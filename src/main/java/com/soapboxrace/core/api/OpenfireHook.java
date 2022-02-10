@@ -106,6 +106,29 @@ public class OpenfireHook {
                     }
                 }
             }
+        } else if(command.contains("debug")) {
+            TokenSessionEntity tokendata = tokenSessionBO.findByUserId(personaEntity.getUser().getId());
+            Long getActiveLobbyId = 0L;
+            Long getEventSessionId = 0L;
+
+            if(tokendata.getActiveLobbyId() != null) getActiveLobbyId = tokendata.getActiveLobbyId();
+            if(tokendata.getEventSessionId() != null) getEventSessionId = tokendata.getEventSessionId();
+
+            LobbyEntity lobbyEntities = lobbyDAO.findById(getActiveLobbyId);
+            if(lobbyEntities != null) {             
+                Integer totalVotes = lobbyEntrantDAO.getVotes(lobbyEntities)+1;
+
+                List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
+                Integer totalUsersInLobby = lobbyEntrants == null ? 1 : lobbyEntrants.size();
+
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("--- DEBUG ---"), personaEntity.getPersonaId());
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("getActiveLobbyId: " + getActiveLobbyId ), personaEntity.getPersonaId());
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("getEventSessionId: " + getEventSessionId ), personaEntity.getPersonaId());
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("lobbyEntities: " + lobbyEntities ), personaEntity.getPersonaId());
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("totalVotes: " + totalVotes), personaEntity.getPersonaId());
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("totalUsersInLobby: " + totalUsersInLobby), personaEntity.getPersonaId());
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("--- END DEBUG ---"), personaEntity.getPersonaId());
+            }
         } else {
             String correctToken = parameterBO.getStrParam("OPENFIRE_TOKEN");
 
