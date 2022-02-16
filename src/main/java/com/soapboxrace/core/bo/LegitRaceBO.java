@@ -26,6 +26,9 @@ public class LegitRaceBO {
     @EJB
     private CarDAO carDAO;
 
+    @EJB
+    private ParameterBO parameterBO;
+
     public boolean isLegit(Long activePersonaId, ArbitrationPacket arbitrationPacket,
                            EventSessionEntity sessionEntity,
                            EventDataEntity dataEntity) {
@@ -34,9 +37,17 @@ public class LegitRaceBO {
 
         if (!legit) {
             socialBo.sendReport(0L, activePersonaId, 4,
-                    String.format("Abnormal event time: %d (below minimum of %d on event %d; session %d)",
-                            dataEntity.getServerTimeInMilliseconds(), minimumTime, sessionEntity.getEvent().getId(), sessionEntity.getId()),
-                    (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
+                String.format("Abnormal event time: %d (below minimum of %d on event %d; session %d)",
+                    dataEntity.getServerTimeInMilliseconds(), minimumTime, sessionEntity.getEvent().getId(), sessionEntity.getId()),
+                (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
+            return false;
+        }
+
+        //Calculate globaltime
+        if((arbitrationPacket.getAlternateEventDurationInMilliseconds()-dataEntity.getServerTimeInMilliseconds()) >= parameterBO.getIntParam("SBRWR_TIME_THRESHOLD", 10000)) {
+            String.format("Autofinish detected: timediff is %d (on event %d; session %d)",
+                (arbitrationPacket.getAlternateEventDurationInMilliseconds()-dataEntity.getServerTimeInMilliseconds()), sessionEntity.getEvent().getId(), sessionEntity.getId(),
+                (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
             return false;
         }
 
@@ -74,6 +85,16 @@ public class LegitRaceBO {
                     (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
 
                     return false;                    
+                }
+
+                //Calc, wow
+                if ((pursuitArbitrationPacket.getAlternateEventDurationInMilliseconds()/1000)/pursuitArbitrationPacket.getCopsDeployed() <= parameterBO.getIntParam("SBRWR_COPS_THRESHOLD", 25)) {
+                    socialBo.sendReport(0L, activePersonaId, 4,
+                    String.format("Invalid data received from pursuit outrun, over %d cops in %d seconds",
+                            pursuitArbitrationPacket.getCopsDeployed(), pursuitArbitrationPacket.getAlternateEventDurationInMilliseconds()/1000),
+                    (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
+
+                    return false;       
                 }
 
                 return pursuitArbitrationPacket.getTopSpeed() != 0 || pursuitArbitrationPacket.getInfractions() == 0;
