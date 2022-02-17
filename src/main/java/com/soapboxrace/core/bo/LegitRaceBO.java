@@ -29,6 +29,21 @@ public class LegitRaceBO {
     @EJB
     private ParameterBO parameterBO;
 
+    public String secToTime(int sec) {
+        int seconds = sec % 60;
+        int minutes = sec / 60;
+        if (minutes >= 60) {
+            int hours = minutes / 60;
+            minutes %= 60;
+            if( hours >= 24) {
+                int days = hours / 24;
+                return String.format("%d days, %02d hours, %02d mins and %02d secs", days, hours%24, minutes, seconds);
+            }
+            return String.format("%02d hours, %02d mins and %02d secs", hours, minutes, seconds);
+        }
+        return String.format("%02d mins and %02d secs", minutes, seconds);
+    }
+
     public boolean isLegit(Long activePersonaId, ArbitrationPacket arbitrationPacket,
                            EventSessionEntity sessionEntity,
                            EventDataEntity dataEntity) {
@@ -45,17 +60,19 @@ public class LegitRaceBO {
 
         //Calculate globaltime
         if((arbitrationPacket.getAlternateEventDurationInMilliseconds()-dataEntity.getServerTimeInMilliseconds()) >= parameterBO.getIntParam("SBRWR_TIME_THRESHOLD", 10000)) {
+            int timediff = (int)(arbitrationPacket.getAlternateEventDurationInMilliseconds()-dataEntity.getServerTimeInMilliseconds());
+
             socialBo.sendReport(0L, activePersonaId, 4,
-                String.format("Autofinish detected: timediff is %d (on event %d; session %d)", 
-                    (arbitrationPacket.getAlternateEventDurationInMilliseconds()-dataEntity.getServerTimeInMilliseconds()), sessionEntity.getEvent().getId(), sessionEntity.getId()),
+                String.format("Autofinish detected: timediff is %d (on event %s; session %d)", 
+                    secToTime(timediff), sessionEntity.getEvent().getName().split("\\(")[0], sessionEntity.getId()),
                 (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
             return false;
         }
 
         if (arbitrationPacket.getHacksDetected() > 0) {
             socialBo.sendReport(0L, activePersonaId, 4,
-                    String.format("hacksDetected=%d (event %d; session %d)",
-                            arbitrationPacket.getHacksDetected(), sessionEntity.getEvent().getId(), sessionEntity.getId()),
+                    String.format("hacksDetected=%d (event %s; session %d)",
+                            arbitrationPacket.getHacksDetected(), sessionEntity.getEvent().getName().split("\\(")[0], sessionEntity.getId()),
                     (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
             return false;
         }
