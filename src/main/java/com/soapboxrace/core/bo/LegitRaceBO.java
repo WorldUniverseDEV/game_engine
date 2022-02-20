@@ -63,7 +63,7 @@ public class LegitRaceBO {
             int timediff = (int)(arbitrationPacket.getAlternateEventDurationInMilliseconds()-dataEntity.getServerTimeInMilliseconds());
 
             socialBo.sendReport(0L, activePersonaId, 4,
-                String.format("Autofinish detected: timediff is %d (on event %s; session %d)", 
+                String.format("Autofinish detected: timediff is %s (on event %s; session %d)", 
                     secToTime(timediff), sessionEntity.getEvent().getName().split("\\(")[0], sessionEntity.getId()),
                 (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
             return false;
