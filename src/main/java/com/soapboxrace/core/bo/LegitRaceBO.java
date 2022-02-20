@@ -60,7 +60,7 @@ public class LegitRaceBO {
 
         //Calculate globaltime
         if((arbitrationPacket.getAlternateEventDurationInMilliseconds()-dataEntity.getServerTimeInMilliseconds()) >= parameterBO.getIntParam("SBRWR_TIME_THRESHOLD", 10000)) {
-            int timediff = (int)(arbitrationPacket.getAlternateEventDurationInMilliseconds()-dataEntity.getServerTimeInMilliseconds());
+            int timediff = (int)(arbitrationPacket.getAlternateEventDurationInMilliseconds()-dataEntity.getServerTimeInMilliseconds())/1000;
 
             socialBo.sendReport(0L, activePersonaId, 4,
                 String.format("Autofinish detected: timediff is %s (on event %s; session %d)", 
