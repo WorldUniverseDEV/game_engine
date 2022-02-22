@@ -6,6 +6,7 @@
 
 package com.soapboxrace.core.bo;
 
+import com.soapboxrace.core.bo.util.TimeConverter;
 import com.soapboxrace.core.dao.CarDAO;
 import com.soapboxrace.core.jpa.CarEntity;
 import com.soapboxrace.core.jpa.EventDataEntity;
@@ -29,21 +30,6 @@ public class LegitRaceBO {
     @EJB
     private ParameterBO parameterBO;
 
-    public String secToTime(int sec) {
-        int seconds = sec % 60;
-        int minutes = sec / 60;
-        if (minutes >= 60) {
-            int hours = minutes / 60;
-            minutes %= 60;
-            if( hours >= 24) {
-                int days = hours / 24;
-                return String.format("%d days, %02d hours, %02d mins and %02d secs", days, hours%24, minutes, seconds);
-            }
-            return String.format("%02d hours, %02d mins and %02d secs", hours, minutes, seconds);
-        }
-        return String.format("%02d mins and %02d secs", minutes, seconds);
-    }
-
     public boolean isLegit(Long activePersonaId, ArbitrationPacket arbitrationPacket,
                            EventSessionEntity sessionEntity,
                            EventDataEntity dataEntity) {
@@ -64,7 +50,7 @@ public class LegitRaceBO {
 
             socialBo.sendReport(0L, activePersonaId, 4,
                 String.format("Autofinish detected: timediff is %s (on event %s; session %d)", 
-                    secToTime(timediff), sessionEntity.getEvent().getName().split("\\(")[0], sessionEntity.getId()),
+                    TimeConverter.secToTime(timediff), sessionEntity.getEvent().getName().split("\\(")[0].trim(), sessionEntity.getId()),
                 (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
             return false;
         }
@@ -72,7 +58,15 @@ public class LegitRaceBO {
         if (arbitrationPacket.getHacksDetected() > 0) {
             socialBo.sendReport(0L, activePersonaId, 4,
                     String.format("hacksDetected=%d (event %s; session %d)",
-                            arbitrationPacket.getHacksDetected(), sessionEntity.getEvent().getName().split("\\(")[0], sessionEntity.getId()),
+                            arbitrationPacket.getHacksDetected(), sessionEntity.getEvent().getName().split("\\(")[0].trim(), sessionEntity.getId()),
+                    (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
+            return false;
+        }
+
+        if (arbitrationPacket.getKonami() > 0) {
+            socialBo.sendReport(0L, activePersonaId, 4,
+                    String.format("konami=%d (event %s; session %d)",
+                            arbitrationPacket.getKonami(), sessionEntity.getEvent().getName().split("\\(")[0].trim(), sessionEntity.getId()),
                     (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
             return false;
         }
