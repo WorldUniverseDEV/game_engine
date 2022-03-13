@@ -2,12 +2,10 @@ package com.soapboxrace.core.api;
 
 import com.soapboxrace.core.bo.*;
 import com.soapboxrace.core.dao.*;
-import com.soapboxrace.core.jpa.LobbyEntity;
-import com.soapboxrace.core.jpa.LobbyEntrantEntity;
 import com.soapboxrace.core.jpa.PersonaEntity;
-import com.soapboxrace.core.jpa.TokenSessionEntity;
 import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
-import com.soapboxrace.core.xmpp.XmppChat;
+
+import com.soapboxrace.core.bo.commands.*;
 
 import javax.ejb.EJB;
 import javax.ws.rs.HeaderParam;
@@ -16,7 +14,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.security.MessageDigest;
-import java.util.List;
 
 @Path("/ofcmdhook")
 public class OpenfireHook {
@@ -45,101 +42,22 @@ public class OpenfireHook {
     public Response openfireHook(@HeaderParam("Authorization") String token, @QueryParam("cmd") String command, @QueryParam("pid") long persona, @QueryParam("webhook") Boolean webHook) {        
         PersonaEntity personaEntity = personaDAO.find(persona);
 
-        if(command.contains("nopu")) {
-            if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
-                TokenSessionEntity tokendata = tokenSessionBO.findByUserId(personaEntity.getUser().getId());
+        String correctToken = parameterBO.getStrParam("OPENFIRE_TOKEN");
 
-                if(tokendata == null) {
-                    return Response.status(Response.Status.BAD_REQUEST).entity("can't find valid token for user").build();
-                }
+        if (token == null || !MessageDigest.isEqual(token.getBytes(), correctToken.getBytes())) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("invalid token").build();
+        }
 
-                Long getActiveLobbyId = 0L;
-                Long getEventSessionId = 0L;
-
-                if(tokendata.getActiveLobbyId() != null) getActiveLobbyId = tokendata.getActiveLobbyId();
-                if(tokendata.getEventSessionId() != null) getEventSessionId = tokendata.getEventSessionId();
-
-                if(getActiveLobbyId != 0L && getEventSessionId == 0) {
-                    LobbyEntity lobbyEntities = lobbyDAO.findById(getActiveLobbyId);
-
-                    //Disable command execution if lobby was not found
-                    if(lobbyEntities == null) {
-                        return Response.noContent().build();
-                    }
-
-                    //Disable command execution for meetingplace and drag events
-                    if(lobbyEntities.getEvent().getEventModeId() == 19 || lobbyEntities.getEvent().getEventModeId() == 22) {
-                        return Response.noContent().build();
-                    }
-
-                    //Disable command if join time is less than 5 seconds
-                    if(lobbyEntities.getLobbyCountdownInMilliseconds(lobbyEntities.getEvent().getLobbyCountdownTime()) <= 5000) {
-                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_VOTEENDED"), personaEntity.getPersonaId());
-                        return Response.noContent().build();
-                    }
-
-                    List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
-
-                    Integer totalVotes = lobbyEntrantDAO.getVotes(lobbyEntities)+1;
-                    Integer totalUsersInLobby = lobbyEntrants == null ? 1 : lobbyEntrants.size();
-
-                    if(totalUsersInLobby >= 2) {
-                        if(lobbyEntrantDAO.getVoteStatus(personaEntity, lobbyEntities).getNopuMode()) {
-                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ALREADYVOTED"), personaEntity.getPersonaId());
-                        } else {
-                            lobbyEntrantDAO.updateVoteByPersonaAndLobby(personaEntity, lobbyEntities);
-
-                            if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_VOTEMESSAGES")) {
-                                for (LobbyEntrantEntity lobbyEntrant : lobbyEntrants) {
-                                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_USERVOTED," + personaEntity.getName() + "," + totalVotes + "," + totalUsersInLobby), lobbyEntrant.getPersona().getPersonaId());
-                                }
-                            }
-                        }
-                    }
-                } else if(getActiveLobbyId != 0L && getEventSessionId != 0) {
-                    if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_WARNING_ONEVENT")) {
-                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ONEVENT"), personaEntity.getPersonaId());
-                    }                
-                } else {
-                    if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_WARNING_ONFREEROAM")) {
-                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ONFREEROAM"), personaEntity.getPersonaId());
-                    }
-                }
-            }
-        } else if(command.contains("debug")) {
-            TokenSessionEntity tokendata = tokenSessionBO.findByUserId(personaEntity.getUser().getId());
-            Long getActiveLobbyId = 0L;
-            Long getEventSessionId = 0L;
-
-            if(tokendata.getActiveLobbyId() != null) getActiveLobbyId = tokendata.getActiveLobbyId();
-            if(tokendata.getEventSessionId() != null) getEventSessionId = tokendata.getEventSessionId();
-
-            LobbyEntity lobbyEntities = lobbyDAO.findById(getActiveLobbyId);
-            if(lobbyEntities != null) {             
-                Integer totalVotes = lobbyEntrantDAO.getVotes(lobbyEntities)+1;
-
-                List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
-                Integer totalUsersInLobby = lobbyEntrants == null ? 1 : lobbyEntrants.size();
-
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("--- DEBUG ---"), personaEntity.getPersonaId());
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("getActiveLobbyId: " + getActiveLobbyId ), personaEntity.getPersonaId());
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("getEventSessionId: " + getEventSessionId ), personaEntity.getPersonaId());
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("lobbyEntities: " + lobbyEntities ), personaEntity.getPersonaId());
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("totalVotes: " + totalVotes), personaEntity.getPersonaId());
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("totalUsersInLobby: " + totalUsersInLobby), personaEntity.getPersonaId());
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("--- END DEBUG ---"), personaEntity.getPersonaId());
-            }
-        } else {
-            String correctToken = parameterBO.getStrParam("OPENFIRE_TOKEN");
-
-            if (token == null || !MessageDigest.isEqual(token.getBytes(), correctToken.getBytes())) {
-                return Response.status(Response.Status.BAD_REQUEST).entity("invalid token").build();
-            }
-
-            if (personaEntity != null && personaEntity.getUser().isAdmin()) {
-                Boolean sendOrNot = Boolean.valueOf(webHook);
-                adminBO.sendChatCommand(persona, command, personaEntity.getName(), sendOrNot);
-            }
+        //Split up commands
+        String[] commandSplitted = command.split(" ");
+        switch(commandSplitted['0']) {
+            case "nopu":    new NoPowerups().initialize(token, command, personaEntity, webHook); break;
+            case "debug":   new Debug().initialize(token, command, personaEntity, webHook); break;
+            case "ban":     new AdminCommand().initialize(token, command, personaEntity, webHook); break;
+            case "kick":    new AdminCommand().initialize(token, command, personaEntity, webHook); break;
+            case "unban":   new AdminCommand().initialize(token, command, personaEntity, webHook); break;
+            case "vinyls":  new Vinyls().initialize(token, command, personaEntity, webHook); break;
+            default:        new DefaultCommand().initialize(token, command, personaEntity, webHook); break;
         }
         
         return Response.noContent().build();
