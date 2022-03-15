@@ -18,7 +18,7 @@ public class DefaultCommand {
     @EJB private LobbyEntrantDAO lobbyEntrantDAO;
 
     public Response initialize(String token, String command, PersonaEntity personaEntity, Boolean webHook) {
-        openFireSoapBoxCli.send(XmppChat.createSystemMessage("Unknown command: " + command.split(" ")[0]), personaEntity.getPersonaId());
+        openFireSoapBoxCli.send(XmppChat.createSystemMessage("Unknown command: " + command), personaEntity.getPersonaId());
         return Response.noContent().build();
 	}
 }
