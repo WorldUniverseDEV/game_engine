@@ -10,13 +10,17 @@ import com.soapboxrace.core.jpa.*;
 import com.soapboxrace.core.xmpp.*;
 
 public class Debug {
-    @EJB private ParameterBO parameterBO;
-    @EJB private PersonaDAO personaDAO;
-    @EJB private AdminBO adminBO;
-    @EJB private TokenSessionBO tokenSessionBO;
-    @EJB private OpenFireSoapBoxCli openFireSoapBoxCli;
-    @EJB private LobbyDAO lobbyDAO;
-    @EJB private LobbyEntrantDAO lobbyEntrantDAO;
+    @EJB 
+    private TokenSessionBO tokenSessionBO;
+
+    @EJB 
+    private OpenFireSoapBoxCli openFireSoapBoxCli;
+
+    @EJB 
+    private LobbyDAO lobbyDAO;
+
+    @EJB 
+    private LobbyEntrantDAO lobbyEntrantDAO;
 
     public Response initialize(String token, String command, PersonaEntity personaEntity, Boolean webHook) {
         TokenSessionEntity tokendata = tokenSessionBO.findByUserId(personaEntity.getUser().getId());

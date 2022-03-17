@@ -10,13 +10,20 @@ import com.soapboxrace.core.jpa.*;
 import com.soapboxrace.core.xmpp.*;
 
 public class NoPowerups {
-    @EJB private ParameterBO parameterBO;
-    @EJB private PersonaDAO personaDAO;
-    @EJB private AdminBO adminBO;
-    @EJB private TokenSessionBO tokenSessionBO;
-    @EJB private OpenFireSoapBoxCli openFireSoapBoxCli;
-    @EJB private LobbyDAO lobbyDAO;
-    @EJB private LobbyEntrantDAO lobbyEntrantDAO;
+    @EJB 
+    private ParameterBO parameterBO;
+
+    @EJB 
+    private TokenSessionBO tokenSessionBO;
+
+    @EJB 
+    private OpenFireSoapBoxCli openFireSoapBoxCli;
+
+    @EJB 
+    private LobbyDAO lobbyDAO;
+
+    @EJB 
+    private LobbyEntrantDAO lobbyEntrantDAO;
 
     public Response initialize(String token, String command, PersonaEntity personaEntity, Boolean webHook) {
         if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {

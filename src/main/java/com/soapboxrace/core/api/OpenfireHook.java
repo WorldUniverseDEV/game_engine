@@ -17,19 +17,26 @@ import java.security.MessageDigest;
 
 @Path("/ofcmdhook")
 public class OpenfireHook {
-    @EJB private ParameterBO parameterBO;
-    @EJB private PersonaDAO personaDAO;
-    @EJB private AdminBO adminBO;
-    @EJB private TokenSessionBO tokenSessionBO;
-    @EJB private OpenFireSoapBoxCli openFireSoapBoxCli;
-    @EJB private LobbyDAO lobbyDAO;
-    @EJB private LobbyEntrantDAO lobbyEntrantDAO;
+    @EJB 
+    private ParameterBO parameterBO;
 
-    @EJB private AdminCommand adminCommand;
-    @EJB private Debug debugCommand;
-    @EJB private NoPowerups noPowerupsCommand;
-    @EJB private Vinyls vinylsCommand;
-    @EJB private DefaultCommand defaultCommand;
+    @EJB 
+    private PersonaDAO personaDAO;
+
+    @EJB 
+    private AdminBO adminBO;
+
+    @EJB 
+    private TokenSessionBO tokenSessionBO;
+
+    @EJB 
+    private OpenFireSoapBoxCli openFireSoapBoxCli;
+
+    @EJB 
+    private LobbyDAO lobbyDAO;
+
+    @EJB 
+    private LobbyEntrantDAO lobbyEntrantDAO;
 
     @POST
     public Response openfireHook(@HeaderParam("Authorization") String token, @QueryParam("cmd") String command, @QueryParam("pid") long persona, @QueryParam("webhook") Boolean webHook) {        
@@ -44,13 +51,13 @@ public class OpenfireHook {
         //Split up commands
         String[] commandSplitted = command.split(" ");
         switch(commandSplitted[0].trim()) {
-            case "nopu":    noPowerupsCommand.initialize(token, command, personaEntity, webHook); break;
-            case "debug":   debugCommand.initialize(token, command, personaEntity, webHook); break;
-            case "ban":     adminCommand.initialize(token, command, personaEntity, webHook); break;
-            case "kick":    adminCommand.initialize(token, command, personaEntity, webHook); break;
-            case "unban":   adminCommand.initialize(token, command, personaEntity, webHook); break;
-            case "vinyls":  vinylsCommand.initialize(token, command, personaEntity, webHook); break;
-            default:        defaultCommand.initialize(token, command, personaEntity, webHook); break;
+            case "nopu":    new NoPowerups().initialize(token, command, personaEntity, webHook); break;
+            case "debug":   new Debug().initialize(token, command, personaEntity, webHook); break;
+            case "ban":     new AdminCommand().initialize(token, command, personaEntity, webHook); break;
+            case "kick":    new AdminCommand().initialize(token, command, personaEntity, webHook); break;
+            case "unban":   new AdminCommand().initialize(token, command, personaEntity, webHook); break;
+            case "vinyls":  new Vinyls().initialize(token, command, personaEntity, webHook); break;
+            default:        new DefaultCommand().initialize(token, command, personaEntity, webHook); break;
         }
         
         return Response.noContent().build();
