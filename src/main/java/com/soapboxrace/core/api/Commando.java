@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import java.security.MessageDigest;
 
 @Path("/ofcmdhook")
-public class OpenfireHook {
+public class Commando {
     @EJB 
     private ParameterBO parameterBO;
 
