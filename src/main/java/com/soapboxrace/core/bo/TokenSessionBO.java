@@ -104,10 +104,18 @@ public class TokenSessionBO {
         }
     }
 
+
     public void deleteByUserId(Long userId) {
         String sessionKey = this.userIdToSessionKeyMap.remove(userId);
         if (sessionKey != null) {
             removeSession(sessionKey);
+
+            //and delete status for this persona in db:
+            UserEntity userEntity = userDAO.find(userId);
+            if(userEntity != null) {
+                userEntity.setState("OFFLINE");
+                userDAO.update(userEntity);
+            }
         }
     }
 
