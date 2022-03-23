@@ -11,6 +11,7 @@ import com.soapboxrace.core.jpa.UserEntity;
 
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 import java.util.List;
 
 @Stateless
@@ -44,5 +45,9 @@ public class UserDAO extends LongKeyedDAO<UserEntity> {
 
     public Long countUsers() {
         return entityManager.createNamedQuery("UserEntity.countUsers", Long.class).getSingleResult();
+    }
+
+    public void updateOnlineState(String state) {
+        this.entityManager.createNamedQuery("UserEntity.updateOnlineState").setParameter("state", state).executeUpdate();
     }
 }
