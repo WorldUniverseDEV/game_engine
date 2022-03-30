@@ -43,7 +43,7 @@ public class Social {
         } else {
             Long activePersonaId = requestSessionInfo.getActivePersonaId();
 
-            if(activePersonaId == personaId && abuserPersonaId != personaId) {
+            if(activePersonaId == personaId) {
                 bo.sendReport(personaId, abuserPersonaId, petitionType, description, customCarID, chatMinutes, 0L);
             }
         }
