@@ -126,8 +126,14 @@ public abstract class EventResultBO<TA extends ArbitrationPacket, TR extends Eve
                 eventSessionEntity.setNextLobby(nextLobbyEntity);
             }
 
-            int inviteLifetime = nextLobbyEntity.getLobbyCountdownInMilliseconds(eventEntity.getLobbyCountdownTime());
+            int inviteLifetime = 0;
 
+            if(parameterBo.getIntParam("SBRWR_MINIMUMLOBBYTIME") == 0) {
+                inviteLifetime = nextLobbyEntity.getLobbyCountdownInMilliseconds(eventEntity.getLobbyCountdownTime());
+            } else {
+                inviteLifetime = parameterBo.getIntParam("SBRWR_MINIMUMLOBBYTIME");
+            }
+            
             // lobby must have more than 6 seconds left
             if (inviteLifetime > 6000) {
                 result.setLobbyInviteId(nextLobbyEntity.getId());
