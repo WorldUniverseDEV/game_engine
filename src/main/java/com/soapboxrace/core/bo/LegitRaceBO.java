@@ -7,6 +7,7 @@
 package com.soapboxrace.core.bo;
 
 import com.soapboxrace.core.bo.util.TimeConverter;
+import com.soapboxrace.core.bo.util.KonamiDecode;
 import com.soapboxrace.core.dao.CarDAO;
 import com.soapboxrace.core.jpa.CarEntity;
 import com.soapboxrace.core.jpa.EventDataEntity;
@@ -57,16 +58,16 @@ public class LegitRaceBO {
 
         if (arbitrationPacket.getHacksDetected() > 0) {
             socialBo.sendReport(0L, activePersonaId, 4,
-                    String.format("hacksDetected=%d (event %s; session %d)",
-                            arbitrationPacket.getHacksDetected(), sessionEntity.getEvent().getName().split("\\(")[0].trim(), sessionEntity.getId()),
+                    String.format("hacksDetected => %s (event %s; session %d)",
+                        KonamiDecode.getHacksType((int)(arbitrationPacket.getHacksDetected()), "hacksDetected"), sessionEntity.getEvent().getName().split("\\(")[0].trim(), sessionEntity.getId()),
                     (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
             return false;
         }
 
         if (arbitrationPacket.getKonami() > 0) {
             socialBo.sendReport(0L, activePersonaId, 4,
-                    String.format("konami=%d (event %s; session %d)",
-                            arbitrationPacket.getKonami(), sessionEntity.getEvent().getName().split("\\(")[0].trim(), sessionEntity.getId()),
+                String.format("konami => %s (event %s; session %d)",
+                    KonamiDecode.getHacksType(arbitrationPacket.getKonami(), "konami"), sessionEntity.getEvent().getName().split("\\(")[0].trim(), sessionEntity.getId()),
                     (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
             return false;
         }
