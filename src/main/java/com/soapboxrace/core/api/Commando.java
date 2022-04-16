@@ -2,8 +2,8 @@ package com.soapboxrace.core.api;
 
 import com.soapboxrace.core.bo.*;
 import com.soapboxrace.core.dao.*;
-import com.soapboxrace.core.jpa.PersonaEntity;
-import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
+import com.soapboxrace.core.jpa.*;
+import com.soapboxrace.core.xmpp.*;
 
 import com.soapboxrace.core.bo.commands.*;
 
@@ -46,12 +46,20 @@ public class Commando {
 
         if (token == null || !MessageDigest.isEqual(token.getBytes(), correctToken.getBytes())) {
             return Response.status(Response.Status.BAD_REQUEST).entity("invalid token").build();
-        }
+        }      
 
-        _CommandsClass commando = new _CommandsClass();
 
         //Split up commands
         String[] commandSplitted = command.split(" ");
+
+        //print out the command executed info
+        if(parameterBO.getBoolParam("SBRWR_ENABLEDEBUG")) {
+            openFireSoapBoxCli.send("Command executed: " + commandSplitted[0], personaEntity.getPersonaId());
+            openFireSoapBoxCli.send("Params: " + command.replace(commandSplitted[0], "").trim(), personaEntity.getPersonaId());
+        }
+
+        //Switch between them
+        /*_CommandsClass commando = new _CommandsClass();
         switch(commandSplitted[0].trim()) {
             case "nopu":    commando.noPowerupsCommand(token, command, personaEntity, webHook); break;
             case "debug":   commando.debugCommand(token, command, personaEntity, webHook); break;
@@ -61,7 +69,7 @@ public class Commando {
             case "vinyls":  commando.vinylsCommand(token, command, personaEntity, webHook); break;
             default:        commando.defaultCommand(token, command, personaEntity, webHook); break;
         }
-        
+        */
         return Response.noContent().build();
     }
 }
