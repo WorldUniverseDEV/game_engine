@@ -32,8 +32,9 @@ public class LegitRaceBO {
     @EJB
     private ParameterBO parameterBO;
 
-    private void sendReport(String message, Long activePersonaId, ArbitrationPacket arbitrationPacket) {
+    private boolean sendReport(String message, Long activePersonaId, ArbitrationPacket arbitrationPacket) {
         socialBo.sendReport(0L, activePersonaId, 4, message, (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
+        return false;
     }
 
     public boolean isLegit(Long activePersonaId, ArbitrationPacket arbitrationPacket, EventSessionEntity sessionEntity, EventDataEntity dataEntity) {
@@ -47,7 +48,6 @@ public class LegitRaceBO {
                 dataEntity.getServerTimeInMilliseconds(), minimumTime, sessionEntity.getEvent().getId(), sessionEntity.getId());
 
             sendReport(reportMessage, activePersonaId, arbitrationPacket);
-            return false;
         }
 
         //Calculate globaltime
@@ -58,7 +58,6 @@ public class LegitRaceBO {
                 TimeConverter.secToTime(timediff), eventName, sessionEntity.getId());
 
             sendReport(reportMessage, activePersonaId, arbitrationPacket);
-            return false;
         }
 
         if (arbitrationPacket.getKonami() > 0) {
@@ -66,7 +65,6 @@ public class LegitRaceBO {
                 KonamiDecode.getHacksType(arbitrationPacket.getKonami(), "konami"), eventName, sessionEntity.getId());
 
             sendReport(reportMessage, activePersonaId, arbitrationPacket);
-            return false;
         }
 
         if (arbitrationPacket.getHacksDetected() > 0) {
@@ -74,7 +72,6 @@ public class LegitRaceBO {
                 KonamiDecode.getHacksType((int)(arbitrationPacket.getHacksDetected()), "hacksDetected"), eventName, sessionEntity.getId());
     
             sendReport(reportMessage, activePersonaId, arbitrationPacket);
-            return false;
         }
 
         if (arbitrationPacket instanceof TeamEscapeArbitrationPacket) {
@@ -86,7 +83,6 @@ public class LegitRaceBO {
                         teamEscapeArbitrationPacket.getCopsDisabled(), teamEscapeArbitrationPacket.getCopsDeployed());
                     
                     sendReport(reportMessage, activePersonaId, arbitrationPacket);
-                    return false;
                 }
             }
         }
@@ -100,7 +96,6 @@ public class LegitRaceBO {
                         pursuitArbitrationPacket.getCopsDisabled(), pursuitArbitrationPacket.getCopsDeployed());
                 
                     sendReport(reportMessage, activePersonaId, arbitrationPacket);
-                    return false;                   
                 }
 
                 //Calc, wow
@@ -109,46 +104,32 @@ public class LegitRaceBO {
                         pursuitArbitrationPacket.getCopsDeployed(), pursuitArbitrationPacket.getAlternateEventDurationInMilliseconds()/1000);
 
                     sendReport(reportMessage, activePersonaId, arbitrationPacket);
-                    return false;       
                 }
 
                 if(pursuitArbitrationPacket.getTopSpeed() == 0) {
-                    reportMessage = "User hasn't moved from place";
-
-                    sendReport(reportMessage, activePersonaId, arbitrationPacket);
-                    return false;     
+                    sendReport("User hasn't moved from place", activePersonaId, arbitrationPacket);
                 }
 
                 if(pursuitArbitrationPacket.getInfractions() != 0) {
-                    reportMessage = "User didn't made any infraction";
-
-                    sendReport(reportMessage, activePersonaId, arbitrationPacket);
-                    return false;     
+                    sendReport("User didn't made any infraction", activePersonaId, arbitrationPacket);
                 }
             }
         }
 
         CarEntity carEntity = carDAO.find(arbitrationPacket.getCarId());
         if (carEntity == null) {
-            reportMessage = "User drived a car that doesn't exists on database.";
-
-            sendReport(reportMessage, activePersonaId, arbitrationPacket);
-            return false;    
+            sendReport("User drove a car not in database.", activePersonaId, arbitrationPacket);
         }
 
         if (carEntity.getCarClassHash() == 0) {
-            reportMessage = "User drived a car that is traffic or nonexistent.";
-
-            sendReport(reportMessage, activePersonaId, arbitrationPacket);
-            return false;    
+            sendReport("User drove a Traffic (or nonexistent) Car", activePersonaId, arbitrationPacket);
         }
 
         if(sessionEntity.getEvent().getCarClassHash() == 607077938 && carEntity.getCarClassHash() != sessionEntity.getEvent().getCarClassHash()) {
-            reportMessage = String.format("User drived a car that doesn't meet the class restriction of the event (class %s, eventname %s).", 
+            reportMessage = String.format("User drove a car that doesn't meet the class restriction of the event (class %s, eventname %s).", 
                 HelpingTools.getClass(carEntity.getCarClassHash()), eventName);
 
             sendReport(reportMessage, activePersonaId, arbitrationPacket);
-            return false;  
         }
 
         return true;
