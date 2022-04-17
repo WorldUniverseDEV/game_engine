@@ -7,6 +7,7 @@
 package com.soapboxrace.core.bo;
 
 import com.soapboxrace.core.bo.util.TimeConverter;
+import com.soapboxrace.core.bo.util.HelpingTools;
 import com.soapboxrace.core.bo.util.KonamiDecode;
 import com.soapboxrace.core.dao.CarDAO;
 import com.soapboxrace.core.jpa.CarEntity;
@@ -31,17 +32,21 @@ public class LegitRaceBO {
     @EJB
     private ParameterBO parameterBO;
 
-    public boolean isLegit(Long activePersonaId, ArbitrationPacket arbitrationPacket,
-                           EventSessionEntity sessionEntity,
-                           EventDataEntity dataEntity) {
+    private void sendReport(String message, Long activePersonaId, ArbitrationPacket arbitrationPacket) {
+        socialBo.sendReport(0L, activePersonaId, 4, message, (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
+    }
+
+    public boolean isLegit(Long activePersonaId, ArbitrationPacket arbitrationPacket, EventSessionEntity sessionEntity, EventDataEntity dataEntity) {
         long minimumTime = sessionEntity.getEvent().getLegitTime();
         boolean legit = dataEntity.getServerTimeInMilliseconds() >= minimumTime;
+        String eventName = HelpingTools.upperFirst(sessionEntity.getEvent().getName().split("\\(")[0].trim());
+        String reportMessage = "";
 
         if (!legit) {
-            socialBo.sendReport(0L, activePersonaId, 4,
-                String.format("Abnormal event time: %d (below minimum of %d on event %d; session %d)",
-                    dataEntity.getServerTimeInMilliseconds(), minimumTime, sessionEntity.getEvent().getId(), sessionEntity.getId()),
-                (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
+            reportMessage = String.format("Abnormal event time: %d (below minimum of %d on event %d; session %d)", 
+                dataEntity.getServerTimeInMilliseconds(), minimumTime, sessionEntity.getEvent().getId(), sessionEntity.getId());
+
+            sendReport(reportMessage, activePersonaId, arbitrationPacket);
             return false;
         }
 
@@ -49,26 +54,26 @@ public class LegitRaceBO {
         if((arbitrationPacket.getAlternateEventDurationInMilliseconds()-dataEntity.getServerTimeInMilliseconds()) >= parameterBO.getIntParam("SBRWR_TIME_THRESHOLD", 10000)) {
             int timediff = (int)(arbitrationPacket.getAlternateEventDurationInMilliseconds()-dataEntity.getServerTimeInMilliseconds())/1000;
 
-            socialBo.sendReport(0L, activePersonaId, 4,
-                String.format("Autofinish detected: timediff is %s (on event %s; session %d)", 
-                    TimeConverter.secToTime(timediff), sessionEntity.getEvent().getName().split("\\(")[0].trim(), sessionEntity.getId()),
-                (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
-            return false;
-        }
+            reportMessage = String.format("Autofinish detected: timediff is %s (on event %s; session %d)", 
+                TimeConverter.secToTime(timediff), eventName, sessionEntity.getId());
 
-        if (arbitrationPacket.getHacksDetected() > 0) {
-            socialBo.sendReport(0L, activePersonaId, 4,
-                    String.format("hacksDetected => %s (event %s; session %d)",
-                        KonamiDecode.getHacksType((int)(arbitrationPacket.getHacksDetected()), "hacksDetected"), sessionEntity.getEvent().getName().split("\\(")[0].trim(), sessionEntity.getId()),
-                    (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
+            sendReport(reportMessage, activePersonaId, arbitrationPacket);
             return false;
         }
 
         if (arbitrationPacket.getKonami() > 0) {
-            socialBo.sendReport(0L, activePersonaId, 4,
-                String.format("konami => %s (event %s; session %d)",
-                    KonamiDecode.getHacksType(arbitrationPacket.getKonami(), "konami"), sessionEntity.getEvent().getName().split("\\(")[0].trim(), sessionEntity.getId()),
-                    (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
+            reportMessage = String.format("konami => %s (event %s; session %d)",
+                KonamiDecode.getHacksType(arbitrationPacket.getKonami(), "konami"), eventName, sessionEntity.getId());
+
+            sendReport(reportMessage, activePersonaId, arbitrationPacket);
+            return false;
+        }
+
+        if (arbitrationPacket.getHacksDetected() > 0) {
+            reportMessage = String.format("hacksDetected => %s (event %s; session %d)",
+                KonamiDecode.getHacksType((int)(arbitrationPacket.getHacksDetected()), "hacksDetected"), eventName, sessionEntity.getId());
+    
+            sendReport(reportMessage, activePersonaId, arbitrationPacket);
             return false;
         }
 
@@ -77,11 +82,10 @@ public class LegitRaceBO {
 
             if (teamEscapeArbitrationPacket.getFinishReason() != 8202) {
                 if(teamEscapeArbitrationPacket.getCopsDisabled() > teamEscapeArbitrationPacket.getCopsDeployed()) {
-                    socialBo.sendReport(0L, activePersonaId, 4,
-                        String.format("Disabled more cops than deployed (deployed %d; disabled %d)",
-                            teamEscapeArbitrationPacket.getCopsDisabled(), teamEscapeArbitrationPacket.getCopsDeployed()),
-                    (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
-
+                    reportMessage = String.format("Disabled more cops than deployed (deployed %d; disabled %d)",
+                        teamEscapeArbitrationPacket.getCopsDisabled(), teamEscapeArbitrationPacket.getCopsDeployed());
+                    
+                    sendReport(reportMessage, activePersonaId, arbitrationPacket);
                     return false;
                 }
             }
@@ -92,33 +96,61 @@ public class LegitRaceBO {
 
             if (pursuitArbitrationPacket.getFinishReason() != 8202) {
                 if (pursuitArbitrationPacket.getCopsDisabled() > pursuitArbitrationPacket.getCopsDeployed()) {
-                    socialBo.sendReport(0L, activePersonaId, 4,
-                        String.format("Disabled more cops than deployed (deployed %d; disabled %d)",
-                            pursuitArbitrationPacket.getCopsDisabled(), pursuitArbitrationPacket.getCopsDeployed()),
-                    (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
-
-                    return false;                    
+                    reportMessage = String.format("Disabled more cops than deployed (deployed %d; disabled %d)",
+                        pursuitArbitrationPacket.getCopsDisabled(), pursuitArbitrationPacket.getCopsDeployed());
+                
+                    sendReport(reportMessage, activePersonaId, arbitrationPacket);
+                    return false;                   
                 }
 
                 //Calc, wow
                 if ((pursuitArbitrationPacket.getAlternateEventDurationInMilliseconds()/1000)/pursuitArbitrationPacket.getCopsDeployed() >= parameterBO.getIntParam("SBRWR_COPS_THRESHOLD", 25)) {
-                    socialBo.sendReport(0L, activePersonaId, 4,
-                    String.format("Invalid data received from pursuit outrun, over %d cops in %d seconds",
-                            pursuitArbitrationPacket.getCopsDeployed(), pursuitArbitrationPacket.getAlternateEventDurationInMilliseconds()/1000),
-                    (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
+                    reportMessage = String.format("Invalid data received from pursuit outrun, over %d cops in %d seconds",
+                        pursuitArbitrationPacket.getCopsDeployed(), pursuitArbitrationPacket.getAlternateEventDurationInMilliseconds()/1000);
 
+                    sendReport(reportMessage, activePersonaId, arbitrationPacket);
                     return false;       
                 }
 
-                return pursuitArbitrationPacket.getTopSpeed() != 0 || pursuitArbitrationPacket.getInfractions() == 0;
+                if(pursuitArbitrationPacket.getTopSpeed() == 0) {
+                    reportMessage = "User hasn't moved from place";
+
+                    sendReport(reportMessage, activePersonaId, arbitrationPacket);
+                    return false;     
+                }
+
+                if(pursuitArbitrationPacket.getInfractions() != 0) {
+                    reportMessage = "User didn't made any infraction";
+
+                    sendReport(reportMessage, activePersonaId, arbitrationPacket);
+                    return false;     
+                }
             }
         }
 
         CarEntity carEntity = carDAO.find(arbitrationPacket.getCarId());
         if (carEntity == null) {
-            return false;
+            reportMessage = "User drived a car that doesn't exists on database.";
+
+            sendReport(reportMessage, activePersonaId, arbitrationPacket);
+            return false;    
         }
 
-        return (sessionEntity.getEvent().getCarClassHash() != 607077938 && carEntity.getCarClassHash() == sessionEntity.getEvent().getCarClassHash()) || carEntity.getCarClassHash() != 0;
+        if (carEntity.getCarClassHash() == 0) {
+            reportMessage = "User drived a car that is traffic or nonexistent.";
+
+            sendReport(reportMessage, activePersonaId, arbitrationPacket);
+            return false;    
+        }
+
+        if(sessionEntity.getEvent().getCarClassHash() == 607077938 && carEntity.getCarClassHash() != sessionEntity.getEvent().getCarClassHash()) {
+            reportMessage = String.format("User drived a car that doesn't meet the class restriction of the event (class %s, eventname %s).", 
+                HelpingTools.getClass(carEntity.getCarClassHash()), eventName);
+
+            sendReport(reportMessage, activePersonaId, arbitrationPacket);
+            return false;  
+        }
+
+        return true;
     }
 }
