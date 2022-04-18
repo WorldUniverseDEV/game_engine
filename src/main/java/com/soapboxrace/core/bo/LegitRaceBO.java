@@ -110,7 +110,7 @@ public class LegitRaceBO {
                     sendReport("User hasn't moved from place", activePersonaId, arbitrationPacket);
                 }
 
-                if(pursuitArbitrationPacket.getInfractions() != 0) {
+                if(pursuitArbitrationPacket.getInfractions() == 0) {
                     sendReport("User didn't made any infraction", activePersonaId, arbitrationPacket);
                 }
             }
@@ -125,11 +125,13 @@ public class LegitRaceBO {
             sendReport("User drove a Traffic (or nonexistent) Car", activePersonaId, arbitrationPacket);
         }
 
-        if(sessionEntity.getEvent().getCarClassHash() == 607077938 && carEntity.getCarClassHash() != sessionEntity.getEvent().getCarClassHash()) {
-            reportMessage = String.format("User drove a car that doesn't meet the class restriction of the event (class %s, eventname %s).", 
-                HelpingTools.getClass(carEntity.getCarClassHash()), eventName);
+        if(sessionEntity.getEvent().getCarClassHash() != 607077938) {
+            if(carEntity.getCarClassHash() != sessionEntity.getEvent().getCarClassHash()) {
+                reportMessage = String.format("User drove a car that doesn't meet the class restriction of the event (carClass %s, eventClass &s, eventname %s).", 
+                    HelpingTools.getClass(carEntity.getCarClassHash()), HelpingTools.getClass(sessionEntity.getEvent().getCarClassHash()), eventName);
 
-            sendReport(reportMessage, activePersonaId, arbitrationPacket);
+                sendReport(reportMessage, activePersonaId, arbitrationPacket);
+            }
         }
 
         return true;
