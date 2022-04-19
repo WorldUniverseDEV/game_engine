@@ -48,7 +48,6 @@ public class Commando {
             return Response.status(Response.Status.BAD_REQUEST).entity("invalid token").build();
         }      
 
-
         //Split up commands
         String[] commandSplitted = command.split(" ");
 
@@ -59,17 +58,15 @@ public class Commando {
         }
 
         //Switch between them
-        /*_CommandsClass commando = new _CommandsClass();
         switch(commandSplitted[0].trim()) {
-            case "nopu":    commando.noPowerupsCommand(token, command, personaEntity, webHook); break;
-            case "debug":   commando.debugCommand(token, command, personaEntity, webHook); break;
-            case "ban":     commando.adminCommands(token, command, personaEntity, webHook); break;
-            case "kick":    commando.adminCommands(token, command, personaEntity, webHook); break;
-            case "unban":   commando.adminCommands(token, command, personaEntity, webHook); break;
-            case "vinyls":  commando.vinylsCommand(token, command, personaEntity, webHook); break;
-            default:        commando.defaultCommand(token, command, personaEntity, webHook); break;
+            case "nopu":        new NoPowerups().Command(tokenSessionBO, parameterBO, personaEntity, lobbyDAO, openFireSoapBoxCli, lobbyEntrantDAO); break;
+            case "debug":       new Debug().Commands(); break;
+            case "ban":         new AdminCommand().Commands(adminBO, personaEntity, command, webHook); break;
+            case "kick":        new AdminCommand().Commands(adminBO, personaEntity, command, webHook); break;
+            case "unban":       new AdminCommand().Commands(adminBO, personaEntity, command, webHook); break;
+            case "vinyls":      new Vinyls().Command(openFireSoapBoxCli, personaEntity); break;
+            default:            new DefaultCommand().Command(openFireSoapBoxCli, personaEntity, commandSplitted[0].trim()); break;
         }
-        */
         return Response.noContent().build();
     }
 }

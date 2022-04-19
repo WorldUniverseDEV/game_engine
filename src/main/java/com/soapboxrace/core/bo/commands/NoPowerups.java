@@ -8,13 +8,13 @@ import com.soapboxrace.core.dao.*;
 import com.soapboxrace.core.jpa.*;
 import com.soapboxrace.core.xmpp.*;
 
-public interface NoPowerups {
-    public default Response noPowerupsCommand(String token, String command, PersonaEntity personaEntity, Boolean webHook) {
-        if(new ParameterBO().getBoolParam("SBRWR_ENABLE_NOPU")) {
-            TokenSessionEntity tokendata = new TokenSessionBO().findByUserId(personaEntity.getUser().getId());
+public class NoPowerups {
+    public Response Command(TokenSessionBO tokenSessionBO, ParameterBO parameterBO, PersonaEntity personaEntity, LobbyDAO lobbyDAO, OpenFireSoapBoxCli openFireSoapBoxCli, LobbyEntrantDAO lobbyEntrantDAO) {
+        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
+            TokenSessionEntity tokendata = tokenSessionBO.findByUserId(personaEntity.getUser().getId());
 
             if(tokendata == null) {
-                return Response.noContent().build();
+                return Response.status(Response.Status.BAD_REQUEST).entity("can't find valid token for user").build();
             }
 
             Long getActiveLobbyId = 0L;
@@ -24,7 +24,7 @@ public interface NoPowerups {
             if(tokendata.getEventSessionId() != null) getEventSessionId = tokendata.getEventSessionId();
 
             if(getActiveLobbyId != 0L && getEventSessionId == 0) {
-                LobbyEntity lobbyEntities = new LobbyDAO().findById(getActiveLobbyId);
+                LobbyEntity lobbyEntities = lobbyDAO.findById(getActiveLobbyId);
 
                 //Disable command execution if lobby was not found
                 if(lobbyEntities == null) {
@@ -38,39 +38,39 @@ public interface NoPowerups {
 
                 //Disable command if join time is less than 5 seconds
                 if(lobbyEntities.getLobbyCountdownInMilliseconds(lobbyEntities.getEvent().getLobbyCountdownTime()) <= 5000) {
-                    new OpenFireSoapBoxCli().send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_VOTEENDED"), personaEntity.getPersonaId());
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_VOTEENDED"), personaEntity.getPersonaId());
                     return Response.noContent().build();
                 }
 
                 List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
 
-                Integer totalVotes = new LobbyEntrantDAO().getVotes(lobbyEntities)+1;
+                Integer totalVotes = lobbyEntrantDAO.getVotes(lobbyEntities)+1;
                 Integer totalUsersInLobby = lobbyEntrants == null ? 1 : lobbyEntrants.size();
 
                 if(totalUsersInLobby >= 2) {
-                    if(new LobbyEntrantDAO().getVoteStatus(personaEntity, lobbyEntities).getNopuMode()) {
-                        new OpenFireSoapBoxCli().send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ALREADYVOTED"), personaEntity.getPersonaId());
+                    if(lobbyEntrantDAO.getVoteStatus(personaEntity, lobbyEntities).getNopuMode()) {
+                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ALREADYVOTED"), personaEntity.getPersonaId());
                     } else {
-                        new LobbyEntrantDAO().updateVoteByPersonaAndLobby(personaEntity, lobbyEntities);
+                        lobbyEntrantDAO.updateVoteByPersonaAndLobby(personaEntity, lobbyEntities);
 
-                        if(new ParameterBO().getBoolParam("SBRWR_NOPU_ENABLE_VOTEMESSAGES")) {
+                        if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_VOTEMESSAGES")) {
                             for (LobbyEntrantEntity lobbyEntrant : lobbyEntrants) {
-                                new OpenFireSoapBoxCli().send(XmppChat.createSystemMessage("SBRWR_NOPU_USERVOTED," + personaEntity.getName() + "," + totalVotes + "," + totalUsersInLobby), lobbyEntrant.getPersona().getPersonaId());
+                                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_USERVOTED," + personaEntity.getName() + "," + totalVotes + "," + totalUsersInLobby), lobbyEntrant.getPersona().getPersonaId());
                             }
                         }
                     }
                 }
             } else if(getActiveLobbyId != 0L && getEventSessionId != 0) {
-                if(new ParameterBO().getBoolParam("SBRWR_NOPU_ENABLE_WARNING_ONEVENT")) {
-                    new OpenFireSoapBoxCli().send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ONEVENT"), personaEntity.getPersonaId());
+                if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_WARNING_ONEVENT")) {
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ONEVENT"), personaEntity.getPersonaId());
                 }                
             } else {
-                if(new ParameterBO().getBoolParam("SBRWR_NOPU_ENABLE_WARNING_ONFREEROAM")) {
-                    new OpenFireSoapBoxCli().send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ONFREEROAM"), personaEntity.getPersonaId());
+                if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_WARNING_ONFREEROAM")) {
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ONFREEROAM"), personaEntity.getPersonaId());
                 }
             }
         }
 
         return Response.noContent().build();
-	}
+    }
 }
