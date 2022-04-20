@@ -40,13 +40,17 @@ public class Commando {
 
     @POST
     public Response openfireHook(@HeaderParam("Authorization") String token, @QueryParam("cmd") String command, @QueryParam("pid") long persona, @QueryParam("webhook") Boolean webHook) {        
-        PersonaEntity personaEntity = personaDAO.find(persona);
-
+        //Verify the token first
         String correctToken = parameterBO.getStrParam("OPENFIRE_TOKEN");
-
         if (token == null || !MessageDigest.isEqual(token.getBytes(), correctToken.getBytes())) {
             return Response.status(Response.Status.BAD_REQUEST).entity("invalid token").build();
-        }      
+        }
+
+        //Find out the user that called the command
+        PersonaEntity personaEntity = personaDAO.find(persona);
+        
+        //Remove slash at the beginning
+        command = command.substring(1);
 
         //Split up commands
         String[] commandSplitted = command.split(" ");
