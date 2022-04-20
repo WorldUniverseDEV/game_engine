@@ -108,7 +108,7 @@ public class LobbyBO {
                         PersonaEntity recipientPersonaEntity = personaDao.find(recipientPersonaId);
 
                         CarEntity carEntity = personaBO.getDefaultCarEntity(recipientPersonaEntity.getPersonaId());
-                        if(eventEntity.getCarClassHash() != 607077938 && carEntity.getCarClassHash() == eventEntity.getCarClassHash()) {
+                        if (carEntity.getCarClassHash() == 0 || (eventEntity.getCarClassHash() != 607077938 && carEntity.getCarClassHash() != eventEntity.getCarClassHash())) {
                             lobbyMessagingBO.sendLobbyInvitation(lobbyEntity, recipientPersonaEntity, eventEntity.getLobbyCountdownTime());
                         }
                     }
@@ -130,7 +130,7 @@ public class LobbyBO {
 
         PersonaEntity personaEntity = personaDao.find(personaId);
         CarEntity carEntity = personaBO.getDefaultCarEntity(personaId);
-        if(eventEntity.getCarClassHash() != 607077938 && carEntity.getCarClassHash() == eventEntity.getCarClassHash()) {
+        if (carEntity.getCarClassHash() == 0 || (eventEntity.getCarClassHash() != 607077938 && carEntity.getCarClassHash() != eventEntity.getCarClassHash())) {
             lobbyMessagingBO.sendLobbyInvitation(lobbyEntity, personaEntity, 10000);
         }
         if (!isPrivate) {
