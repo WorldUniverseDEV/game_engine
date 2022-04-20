@@ -10,7 +10,7 @@ import com.soapboxrace.core.xmpp.XmppChat;
 public class AdminCommand {
     public Response Commands(AdminBO adminBO, PersonaEntity personaEntity, String command, Boolean webHook, OpenFireSoapBoxCli openFireSoapBoxCli) {
         if (personaEntity != null && personaEntity.getUser().isAdmin()) {
-            Boolean sendOrNot = Boolean.valueOf(webHook);
+            Boolean sendOrNot = webHook == null ? true : webHook;
             adminBO.sendChatCommand(personaEntity.getPersonaId(), command, personaEntity.getName(), sendOrNot);
         } else {
             openFireSoapBoxCli.send(XmppChat.createSystemMessage("No Permission to use administrative commands."), personaEntity.getPersonaId());
