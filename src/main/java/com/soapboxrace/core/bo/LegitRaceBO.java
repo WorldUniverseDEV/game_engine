@@ -36,11 +36,11 @@ public class LegitRaceBO {
     private ParameterBO parameterBO;
 
     private Boolean isLegit = true;
-    private List<String> reportsMessage = new ArrayList<>();
+    private List<String> listOfReports = new ArrayList<>();
 
     private void sendReport(String reportType, String message) {
         if(parameterBO.getBoolParam("SBRWR_DISABLE_" + reportType + "_REPORTS")) {
-            reportsMessage.add("- " + message);
+            listOfReports.add("- " + message);
             isLegit = false;
         }
     }
@@ -142,9 +142,9 @@ public class LegitRaceBO {
             }
         }
 
-        if(!reportsMessage.isEmpty()) {
-            reportsMessage.add(String.format("\non event %s; session %d", eventName, sessionEntity.getId()));
-            socialBo.sendReport(0L, activePersonaId, 4, String.join("\n", reportsMessage), (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
+        if(!listOfReports.isEmpty()) {
+            listOfReports.add(String.format("\non event %s; session %d", eventName, sessionEntity.getId()));
+            socialBo.sendReport(0L, activePersonaId, 4, String.join("\n", listOfReports), (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
         }
 
         return isLegit;
