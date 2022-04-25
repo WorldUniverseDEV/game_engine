@@ -57,8 +57,8 @@ public class Commando {
 
         //print out the command executed info
         if(parameterBO.getBoolParam("SBRWR_ENABLEDEBUG")) {
-            openFireSoapBoxCli.send("Command executed: " + commandSplitted[0], personaEntity.getPersonaId());
-            openFireSoapBoxCli.send("Params: " + command.replace(commandSplitted[0], "").trim(), personaEntity.getPersonaId());
+            openFireSoapBoxCli.send(XmppChat.createSystemMessage("Command executed: " + commandSplitted[0]), personaEntity.getPersonaId());
+            openFireSoapBoxCli.send(XmppChat.createSystemMessage("Params: " + command.replace(commandSplitted[0], "").trim()), personaEntity.getPersonaId());
         }
 
         //Switch between them
