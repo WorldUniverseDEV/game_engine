@@ -20,7 +20,7 @@ on:
       - xsd-final/**
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.11

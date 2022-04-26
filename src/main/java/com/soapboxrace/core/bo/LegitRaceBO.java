@@ -143,8 +143,8 @@ public class LegitRaceBO {
         }
 
         if(!listOfReports.isEmpty()) {
-            listOfReports.add(String.format("\non event %s; session %d", eventName, sessionEntity.getId()));
-            socialBo.sendReport(0L, activePersonaId, 4, String.join("\n", listOfReports), (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
+            listOfReports.add(String.format("\\\non event %s; session %d", eventName, sessionEntity.getId()));
+            socialBo.sendReport(0L, activePersonaId, 4, String.join("\\\n", listOfReports), (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
         }
 
         return isLegit;
