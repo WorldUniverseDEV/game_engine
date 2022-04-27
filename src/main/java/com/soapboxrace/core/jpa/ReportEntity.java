@@ -18,7 +18,8 @@ public class ReportEntity {
     private Long personaId;
     private Long abuserPersonaId;
 
-    @Column(length = 1000)
+    @Lob
+    @Column(length = 65535)
     private String description;    
 
     private Integer petitionType;
