@@ -39,7 +39,7 @@ public class LegitRaceBO {
     private List<String> listOfReports = new ArrayList<>();
 
     private void reportCheating(String reportType, String message) {
-        if(parameterBO.getBoolParam("SBRWR_DISABLE_" + reportType + "_REPORTS")) {
+        if(!parameterBO.getBoolParam("SBRWR_DISABLE_" + reportType + "_REPORTS")) {
             listOfReports.add("- " + message);
             isLegit = false;
         }
@@ -50,6 +50,7 @@ public class LegitRaceBO {
         boolean legit = dataEntity.getServerTimeInMilliseconds() >= minimumTime;
         String eventName = HelpingTools.upperFirst(sessionEntity.getEvent().getName().split("\\(")[0].trim());
         String reportMessage = "";
+        String carName = "";
 
         if (!legit) {
             reportMessage = String.format("Abnormal event time: %d (below minimum of %d)", 
@@ -127,14 +128,16 @@ public class LegitRaceBO {
         CarEntity carEntity = carDAO.find(arbitrationPacket.getCarId());
         if (carEntity == null) {
             reportCheating("NONEXISTENT_CAR", "User drove a car not in database.");
+        } else {
+            carName = carEntity.getName();
         }
 
-        if (carEntity.getCarClassHash() == 0) {
+        if (carEntity != null && carEntity.getCarClassHash() == 0) {
             reportCheating("TRAFFIC_CAR", "User drove a Traffic (or nonexistent) Car");
         }
 
         if(sessionEntity.getEvent().getCarClassHash() != 607077938) {
-            if(carEntity.getCarClassHash() != sessionEntity.getEvent().getCarClassHash()) {
+            if(carEntity != null && carEntity.getCarClassHash() != sessionEntity.getEvent().getCarClassHash()) {
                 reportMessage = String.format("User drove a car that doesn't meet the class restriction of the event (carClass %s, eventClass %s).", 
                     HelpingTools.getClass(carEntity.getCarClassHash()), HelpingTools.getClass(sessionEntity.getEvent().getCarClassHash()));
 
@@ -143,8 +146,9 @@ public class LegitRaceBO {
         }
 
         if(!listOfReports.isEmpty()) {
-            listOfReports.add(String.format("\\\non event %s; session %d", eventName, sessionEntity.getId()));
-            socialBo.sendReport(0L, activePersonaId, 4, String.join("\\\n", listOfReports), (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
+            listOfReports.add(String.format("\non event %s; session %d; car &s", eventName, sessionEntity.getId(), carName));
+            socialBo.sendReport(0L, activePersonaId, 4, String.join("\n", listOfReports), (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
+            listOfReports.clear();
         }
 
         return isLegit;
