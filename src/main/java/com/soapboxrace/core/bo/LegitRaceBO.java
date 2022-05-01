@@ -9,7 +9,9 @@ package com.soapboxrace.core.bo;
 import com.soapboxrace.core.bo.util.TimeConverter;
 import com.soapboxrace.core.bo.util.HelpingTools;
 import com.soapboxrace.core.bo.util.KonamiDecode;
+import com.soapboxrace.core.dao.CarClassesDAO;
 import com.soapboxrace.core.dao.CarDAO;
+import com.soapboxrace.core.jpa.CarClassesEntity;
 import com.soapboxrace.core.jpa.CarEntity;
 import com.soapboxrace.core.jpa.EventDataEntity;
 import com.soapboxrace.core.jpa.EventSessionEntity;
@@ -31,6 +33,9 @@ public class LegitRaceBO {
 
     @EJB
     private CarDAO carDAO;
+
+    @EJB
+    private CarClassesDAO carClassesDAO;
 
     @EJB
     private ParameterBO parameterBO;
@@ -77,7 +82,7 @@ public class LegitRaceBO {
         }
 
         if (arbitrationPacket.getHacksDetected() > 0) {
-            reportMessage = String.format("hacksDetected => %s (event %s; session %d)",
+            reportMessage = String.format("hacksDetected => %s",
                 KonamiDecode.getHacksType((int)(arbitrationPacket.getHacksDetected()), "hacksDetected"), eventName, sessionEntity.getId());
     
             reportCheating("HACKSDETECTED", reportMessage);
@@ -129,7 +134,8 @@ public class LegitRaceBO {
         if (carEntity == null) {
             reportCheating("NONEXISTENT_CAR", "User drove a car not in database.");
         } else {
-            carName = carEntity.getName();
+            CarClassesEntity carClassesEntity = carClassesDAO.findByName(carEntity.getName());
+            carName = carClassesEntity.getFullName();
         }
 
         if (carEntity != null && carEntity.getCarClassHash() == 0) {

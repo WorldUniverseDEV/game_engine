@@ -65,8 +65,8 @@ public class Commando {
         switch(commandSplitted[0].trim()) {
             case "nopu":        new NoPowerups().Command(tokenSessionBO, parameterBO, personaEntity, lobbyDAO, openFireSoapBoxCli, lobbyEntrantDAO); break;
             case "debug":       new Debug().Commands(); break;
-            case "ban":         new AdminCommand().Commands(adminBO, personaEntity, command, webHook, openFireSoapBoxCli); break;
-            case "kick":        new AdminCommand().Commands(adminBO, personaEntity, command, webHook, openFireSoapBoxCli); break;
+            case "ban":         //adopted from below
+            case "kick":        //adopted from below
             case "unban":       new AdminCommand().Commands(adminBO, personaEntity, command, webHook, openFireSoapBoxCli); break;
             case "vinyls":      new Vinyls().Command(openFireSoapBoxCli, personaEntity); break;
             default:            new DefaultCommand().Command(openFireSoapBoxCli, personaEntity, commandSplitted[0].trim()); break;
