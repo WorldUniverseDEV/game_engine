@@ -31,7 +31,7 @@ public class CarClassesDAO extends StringKeyedDAO<CarClassesEntity> {
 
     public CarClassesEntity findByName(String name) {
         TypedQuery<CarClassesEntity> query = entityManager.createQuery("SELECT obj FROM CarClassesEntity obj WHERE " +
-            "obj.store_name = :name", CarClassesEntity.class);
+            "obj.storeName = :name", CarClassesEntity.class);
         query.setParameter("name", name);
         try {
             return query.getSingleResult();
