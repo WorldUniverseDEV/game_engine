@@ -58,10 +58,14 @@ public class Powerups {
     public String activated(@PathParam(value = "powerupHash") Integer powerupHash, @QueryParam("targetId") Long targetId, @QueryParam("receivers") String receivers, @QueryParam("eventSessionId") Integer eventSessionId) {
         Long activePersonaId = requestSessionInfo.getActivePersonaId();
 
-        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU") && requestSessionInfo.getEventSessionId() != null) {
+        if(requestSessionInfo.getEventSessionId() != null) {
             EventSessionEntity eventSession = eventBO.findEventSessionById(requestSessionInfo.getEventSessionId());
 
-            if(eventSession != null) {
+            if(eventSession.getEvent().getBannedMpPowerups() != null) {
+                if(eventSession.getEvent().getBannedMpPowerups().contains(powerupHash.toString())) {
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_DISABLEDPOWERUP"), activePersonaId);
+                }
+            } else if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
                 if(eventSession.getNopuMode() == true) {
                     openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_MODE_ENABLED"), activePersonaId);
                 } else {
