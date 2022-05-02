@@ -1,5 +1,8 @@
 package com.soapboxrace.core.bo.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HelpingTools {
     public static Boolean isNullOrEmptyCheck(String string) {
         if (string == null || string.trim().isEmpty()) { 
@@ -9,8 +12,19 @@ public class HelpingTools {
         return false;
     }
 
-    public static String upperFirst(String string) {
+    public static String upperFirstSingle(String string) {
         return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
+    }
+
+    public static String upperFirst(String string) {
+        String words[] = string.split("\\s");  
+        List<String> capitalizeWord = new ArrayList<>();  
+
+        for(String w : words){  
+            capitalizeWord.add(upperFirstSingle(w));
+        }
+
+        return String.join(" ", capitalizeWord);
     }
 
     public static String getClass(int classHash) {

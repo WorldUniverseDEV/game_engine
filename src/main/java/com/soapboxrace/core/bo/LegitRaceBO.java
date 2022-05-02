@@ -51,9 +51,11 @@ public class LegitRaceBO {
     }
 
     public boolean isLegit(Long activePersonaId, ArbitrationPacket arbitrationPacket, EventSessionEntity sessionEntity, EventDataEntity dataEntity) {
+        isLegit = true; //resetme
+
         long minimumTime = sessionEntity.getEvent().getLegitTime();
         boolean legit = dataEntity.getServerTimeInMilliseconds() >= minimumTime;
-        String eventName = HelpingTools.upperFirst(sessionEntity.getEvent().getName().split("\\(")[0].trim());
+        String eventName = HelpingTools.upperFirstSingle(sessionEntity.getEvent().getName().split("\\(")[0].trim());
         String reportMessage = "";
         String carName = "";
 
@@ -136,6 +138,7 @@ public class LegitRaceBO {
         } else {
             CarClassesEntity carClassesEntity = carClassesDAO.findByName(carEntity.getName());
             carName = carClassesEntity.getFullName();
+            carName = HelpingTools.upperFirst(carName).replace("-", " ");
         }
 
         if (carEntity != null && carEntity.getCarClassHash() == 0) {
