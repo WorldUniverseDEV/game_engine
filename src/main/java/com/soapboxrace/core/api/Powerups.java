@@ -71,6 +71,10 @@ public class Powerups {
                 } else {
                     sendPowerup(powerupHash, targetId, receivers, activePersonaId);
                 }
+            } else if(eventSession.getLobby() != null) {
+                if(parameterBO.getStrParam("SBRWR_BANNED_MP_POWERUPS", "").contains(powerupHash.toString())) {
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_DISABLEDPOWERUP"), activePersonaId);
+                }
             } else {
                 sendPowerup(powerupHash, targetId, receivers, activePersonaId);
             }
@@ -88,12 +92,14 @@ public class Powerups {
         powerupActivated.setTargetPersonaId(targetId);
         powerupActivated.setPersonaId(activePersonaId);
         powerupActivatedResponse.setPowerupActivated(powerupActivated);
+
         for (String receiver : receivers.split("-")) {
             long receiverPersonaId = Long.parseLong(receiver);
             if (receiverPersonaId > 10) {
                 openFireSoapBoxCli.send(powerupActivatedResponse, receiverPersonaId);
             }
         }
+
         if (parameterBO.getBoolParam("ENABLE_POWERUP_DECREASE")) {
             PersonaEntity personaEntity = personaBO.getPersonaById(activePersonaId);
             InventoryItemEntity inventoryItemEntity = inventoryBO.decreaseItemCount(inventoryBO.getInventory(personaEntity), powerupHash);
