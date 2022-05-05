@@ -48,9 +48,6 @@ public class EventEntity {
     private boolean isRaceAgainEnabled;
     @Column(columnDefinition = "BIT DEFAULT 1", nullable = false)
     private boolean isDnfEnabled;
-    
-    @Column(nullable = true)
-    private String banned_mp_powerups;
 
     @ManyToOne(targetEntity = EventRewardEntity.class, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "singleplayer_reward_config_id", referencedColumnName = "ID", foreignKey = @ForeignKey(name = "FK_EVENT_SINGLEPLAYER_REWARD_CONFIG_ID"))
@@ -246,16 +243,5 @@ public class EventEntity {
 
     public void setSingleplayerRewardConfig(EventRewardEntity singleplayerRewardConfig) {
         this.singleplayerRewardConfig = singleplayerRewardConfig;
-    }
-
-    public String getBannedMpPowerups() {
-        return banned_mp_powerups;
-    }
-
-    public void setBannedMpPowerups(String banned_mp_powerups) {
-        this.banned_mp_powerups = banned_mp_powerups;
-    }
-
-
-    
+    }    
 }
