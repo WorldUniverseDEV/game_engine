@@ -98,7 +98,14 @@ public class EventBO {
 
                 if(lobbyEntities != null) {
                     List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
-                    nopuMode = ((Math.round((lobbyEntrantDao.getVotes(lobbyEntities) * 100.0f) / lobbyEntrants.size())) >= parameterBO.getIntParam("SBRWR_NOPU_REQUIREDPERCENT")) ? false : true;
+
+                    Integer totalVotes = lobbyEntrantDao.getVotes(lobbyEntities);
+                    Integer totalUsersInLobby = lobbyEntrants.size();
+                    Integer totalVotesPercentage = Math.round((totalVotes * 100.0f) / totalUsersInLobby);
+                    
+                    if(totalVotesPercentage >= parameterBO.getIntParam("SBRWR_NOPU_REQUIREDPERCENT")) {
+                        nopuMode = true;
+                    }
                 }
             }
         }
