@@ -50,13 +50,6 @@ public abstract class EventResultBO<TA extends ArbitrationPacket, TR extends Eve
         if(parameterBo.getBoolParam("SBRWR_DISABLE_16_REPORTS")) packet.setHacksDetected(packet.getHacksDetected() & ~16);
         if(parameterBo.getBoolParam("SBRWR_DISABLE_32_REPORTS")) packet.setHacksDetected(packet.getHacksDetected() & ~32);
 
-        //TODO: Database script to accept certain cheat types.
-        if(packet.getKonami() != 0) {
-            if(parameterBo.getStrListParam("SBRWR_ACCEPT_KONAMI").isEmpty() != true) {
-                
-            }
-        }
-
         return handleInternal(eventSessionEntity, activePersonaId, packet);
     }
 
