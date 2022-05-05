@@ -61,15 +61,12 @@ public class Powerups {
         if(requestSessionInfo.getEventSessionId() != null) {
             EventSessionEntity eventSession = eventBO.findEventSessionById(requestSessionInfo.getEventSessionId());
 
-            //disable nopu globally for both Team and Multiplayer!
-            if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU") && eventSession.getNopuMode() == true) {
-                sendInformation("SBRWR_NOPU_MODE_ENABLED", activePersonaId);
-            }
-
             if (eventSession.getLobby() != null) {
                 //Is Team/Multiplayer!
                 if(parameterBO.getStrParam("SBRWR_BANNED_MP_POWERUPS", "").contains(powerupHash.toString())) {
                     sendInformation("SBRWR_DISABLEDPOWERUP", activePersonaId);
+                } else if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU") && eventSession.getNopuMode() == true) {
+                    sendInformation("SBRWR_NOPU_MODE_ENABLED", activePersonaId);
                 } else {
                     sendPowerup(powerupHash, targetId, receivers, activePersonaId);
                 }

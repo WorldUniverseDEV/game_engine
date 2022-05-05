@@ -15,6 +15,7 @@ import com.soapboxrace.core.dao.PersonaDAO;
 import com.soapboxrace.core.engine.EngineException;
 import com.soapboxrace.core.engine.EngineExceptionCode;
 import com.soapboxrace.core.jpa.*;
+import com.soapboxrace.core.xmpp.*;
 import org.hibernate.Hibernate;
 
 import javax.ejb.EJB;
@@ -49,6 +50,9 @@ public class EventBO {
 
     @EJB
     private ParameterBO parameterBO;
+
+    @EJB
+    private OpenFireSoapBoxCli openFireSoapBoxCli;
 
     public List<EventEntity> availableAtLevel(Long personaId) {
         PersonaEntity personaEntity = personaDao.find(personaId);
@@ -95,6 +99,7 @@ public class EventBO {
         if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
             if(tokenSessionEntity.getActiveLobbyId() != null) {
                 LobbyEntity lobbyEntities = lobbyDao.find(tokenSessionEntity.getActiveLobbyId());
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("CHECK LOBBYENTITIES: " + lobbyEntities.getId()), activePersonaId);
 
                 if(lobbyEntities != null) {
                     List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
@@ -102,10 +107,16 @@ public class EventBO {
                     Integer totalVotes = lobbyEntrantDao.getVotes(lobbyEntities);
                     Integer totalUsersInLobby = lobbyEntrants.size();
                     Integer totalVotesPercentage = Math.round((totalVotes * 100.0f) / totalUsersInLobby);
+
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("totalVotes: " + totalVotes), activePersonaId);
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("totalUsersInLobby: " + totalUsersInLobby), activePersonaId);
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("totalVotesPercentage: " + totalVotesPercentage), activePersonaId);
                     
                     if(totalVotesPercentage >= parameterBO.getIntParam("SBRWR_NOPU_REQUIREDPERCENT")) {
                         nopuMode = true;
                     }
+
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("nopuMode: " + nopuMode), activePersonaId);
                 }
             }
         }
