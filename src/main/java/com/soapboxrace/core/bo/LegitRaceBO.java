@@ -138,7 +138,6 @@ public class LegitRaceBO {
         } else {
             CarClassesEntity carClassesEntity = carClassesDAO.findByName(carEntity.getName());
             carName = carClassesEntity.getFullName();
-            carName = HelpingTools.upperFirst(carName).replace("-", " ");
         }
 
         if (carEntity != null && carEntity.getCarClassHash() == 0) {
@@ -155,7 +154,7 @@ public class LegitRaceBO {
         }
 
         if(!listOfReports.isEmpty()) {
-            listOfReports.add(String.format("\non event %s; session %d; car %s", eventName, sessionEntity.getId(), carName));
+            listOfReports.add(String.format("\non event %s; session %d using %s", eventName, sessionEntity.getId(), carName));
             socialBo.sendReport(0L, activePersonaId, 4, String.join("\n", listOfReports), (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
             listOfReports.clear();
         }
