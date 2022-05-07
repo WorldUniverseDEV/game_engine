@@ -7,15 +7,12 @@
 package com.soapboxrace.core.bo;
 
 import com.soapboxrace.core.dao.EventDAO;
-import com.soapboxrace.core.dao.LobbyDAO;
-import com.soapboxrace.core.dao.LobbyEntrantDAO;
 import com.soapboxrace.core.dao.EventDataDAO;
 import com.soapboxrace.core.dao.EventSessionDAO;
 import com.soapboxrace.core.dao.PersonaDAO;
 import com.soapboxrace.core.engine.EngineException;
 import com.soapboxrace.core.engine.EngineExceptionCode;
 import com.soapboxrace.core.jpa.*;
-import com.soapboxrace.core.xmpp.*;
 import org.hibernate.Hibernate;
 
 import javax.ejb.EJB;
@@ -40,19 +37,7 @@ public class EventBO {
     private PersonaDAO personaDao;
 
     @EJB
-    private LobbyDAO lobbyDao;
-
-    @EJB
-    private LobbyEntrantDAO lobbyEntrantDao;
-
-    @EJB
     private PersonaBO personaBO;
-
-    @EJB
-    private ParameterBO parameterBO;
-
-    @EJB
-    private OpenFireSoapBoxCli openFireSoapBoxCli;
 
     public List<EventEntity> availableAtLevel(Long personaId) {
         PersonaEntity personaEntity = personaDao.find(personaId);
@@ -94,37 +79,10 @@ public class EventBO {
             throw new EngineException(EngineExceptionCode.CarDataInvalid, false);
         }
 
-        //NOPU
-        Boolean nopuMode = false;
-        if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
-            if(tokenSessionEntity.getActiveLobbyId() != null) {
-                LobbyEntity lobbyEntities = lobbyDao.find(tokenSessionEntity.getActiveLobbyId());
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("CHECK LOBBYENTITIES: " + lobbyEntities.getId()), activePersonaId);
-
-                if(lobbyEntities != null) {
-                    List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
-
-                    Integer totalVotes = lobbyEntrantDao.getVotes(lobbyEntities);
-                    Integer totalUsersInLobby = lobbyEntrants.size();
-                    Integer totalVotesPercentage = Math.round((totalVotes * 100.0f) / totalUsersInLobby);
-
-                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("totalVotes: " + totalVotes), activePersonaId);
-                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("totalUsersInLobby: " + totalUsersInLobby), activePersonaId);
-                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("totalVotesPercentage: " + totalVotesPercentage), activePersonaId);
-                    
-                    if(totalVotesPercentage >= parameterBO.getIntParam("SBRWR_NOPU_REQUIREDPERCENT")) {
-                        nopuMode = true;
-                    }
-
-                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("nopuMode: " + nopuMode), activePersonaId);
-                }
-            }
-        }
-
         EventSessionEntity eventSessionEntity = new EventSessionEntity();
         eventSessionEntity.setEvent(eventEntity);
         eventSessionEntity.setStarted(System.currentTimeMillis());
-        eventSessionEntity.setNopuMode(nopuMode);
+        eventSessionEntity.setNopuMode(false);
         eventSessionDao.insert(eventSessionEntity);
         return eventSessionEntity;
     }
