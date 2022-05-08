@@ -145,7 +145,6 @@ public class OpenFireRestApiCli {
         for (MUCRoomEntity entity : listRoomEntity) {
             String roomName = entity.getRoomName();
             if (roomName.contains("group.channel.")) {
-                // FIXME: apparently we need to make the request TWICE, first one will always fail for some reason
                 getAllOccupantsInRoom(roomName);
                 return getAllOccupantsInRoom(roomName);
             }

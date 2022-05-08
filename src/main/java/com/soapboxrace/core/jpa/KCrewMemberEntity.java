@@ -8,7 +8,6 @@ package com.soapboxrace.core.jpa;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "K_CREW_MEMBER")
@@ -31,9 +30,6 @@ public class KCrewMemberEntity {
     @OneToOne(targetEntity = KCrewEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "crewId", referencedColumnName = "ID")
     private KCrewEntity crew;
-
-    private Long points;
-    private int canManage;
 
     public KCrewEntity getCrew() {
         return crew;
