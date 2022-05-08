@@ -2,6 +2,7 @@ package com.soapboxrace.core.bo.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class HelpingTools {
     public static Boolean isNullOrEmptyCheck(String string) {
@@ -41,5 +42,19 @@ public class HelpingTools {
             case 1526233495: return "S3";
             default: return "OPEN";
         }
+    }
+
+    public static String generateCode(int length) {
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        
+        for(int i = 0; i < length; i++) {
+            int index = random.nextInt(alphabet.length());
+            char randomChar = alphabet.charAt(index);
+            sb.append(randomChar);
+        }
+
+        return sb.toString();
     }
 }
