@@ -55,7 +55,7 @@ public class GetServerInformationBO {
         serverInformationVO.setCashRewardMultiplier(parameterBO.getFloatParam("CASH_REWARD_MULTIPLIER"));
         serverInformationVO.setRepRewardMultiplier(parameterBO.getFloatParam("REP_REWARD_MULTIPLIER"));
         serverInformationVO.setDiscordApplicationID(parameterBO.getStrParam("SERVER_INFO_DISCORDAPPLICATIONID"));
-        serverInformationVO.setServerVersion(BuildInfo.getVersion() + " - " + BuildInfo.getCommitID() + " - " + BuildInfo.getCommitMessage());
+        serverInformationVO.setServerVersion(BuildInfo.getVersion() + " - " + BuildInfo.getCommitID());
         serverInformationVO.setOnlineNumber(onlineUsersEntity.getNumberOfOnline());
         serverInformationVO.setNumberOfRegistered(onlineUsersEntity.getNumberOfRegistered());
         serverInformationVO.setModernAuthSupport(parameterBO.getBoolParam("MODERN_AUTH_ENABLED"));
