@@ -9,10 +9,10 @@ package com.soapboxrace.core.jpa;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "VINYLSTORE_DATA")
+@Table(name = "LIVERYSTORE_DATA")
 @NamedQueries({
 
 })
-public class VinylStoreDataEntity {
+public class LiveryStoreDataEntity {
 
 }

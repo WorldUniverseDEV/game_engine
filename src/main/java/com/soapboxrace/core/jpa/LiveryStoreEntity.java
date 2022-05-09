@@ -16,11 +16,11 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity
-@Table(name = "VINYLSTORE")
+@Table(name = "LIVERYSTORE")
 @NamedQueries({ 
         
 })
-public class VinylStoreEntity {
+public class LiveryStoreEntity {
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -33,10 +33,10 @@ public class VinylStoreEntity {
 
     private String code;
 
-    @OneToMany(mappedBy = "vinylstore", targetEntity = VinylStoreDataEntity.class, orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToMany(mappedBy = "liverystore", targetEntity = LiveryStoreDataEntity.class, orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @LazyCollection(LazyCollectionOption.FALSE)
     @Fetch(FetchMode.SUBSELECT)
-    private Set<VinylStoreDataEntity> vinyl_data;
+    private Set<LiveryStoreDataEntity> livery_data;
     private LocalDateTime created;
 
     public int getId() { return id; }
@@ -48,8 +48,8 @@ public class VinylStoreEntity {
     public String getCode() { return code; }
     public void setCode(String code) { this.code = code; }
 
-    public Set<VinylStoreDataEntity> getData() { return vinyl_data; }
-    public void setData(Set<VinylStoreDataEntity> vinyl_data) { this.vinyl_data = vinyl_data; }   
+    public Set<LiveryStoreDataEntity> getData() { return livery_data; }
+    public void setData(Set<LiveryStoreDataEntity> livery_data) { this.livery_data = livery_data; }   
 
     public LocalDateTime getCreated() { return created; }
     public void setCreated(LocalDateTime created) { this.created = created; }
