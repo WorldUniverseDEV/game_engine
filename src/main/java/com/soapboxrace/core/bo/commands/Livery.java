@@ -27,7 +27,7 @@ public class Livery {
         String liveryid = "";
 
         //param 1: import / export
-        if(command[1] == null) {
+        if(command.length > 1 && command[1] == null) {
             openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_MALFORMEDCOMMAND"), personaEntity.getPersonaId());
             return Response.noContent().build();
         } else {
@@ -36,16 +36,21 @@ public class Livery {
 
         //param 2: liveryid (only for import purposes)
         if(command[1].equals("import")) {
-            if(command[2] == null) {
+            if(command.length > 2 && command[2] == null) {
                 openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_MALFORMEDCOMMAND"), personaEntity.getPersonaId());
                 return Response.noContent().build();
             } else {
-                liveryid = command[2].trim();
+                try {
+                    liveryid = command[2].trim();
+                } catch(ArrayIndexOutOfBoundsException err) {
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_MALFORMEDCOMMAND"), personaEntity.getPersonaId());
+                    return Response.noContent().build();
+                }
             }
         }
 
         //param 3: (optional) check for forced import
-        if(command[3] != null && command[3].equals("--force") && command[1].equals("import")) {
+        if(command.length > 3 && command[3] != null && command[3].equals("--force") && command[1].equals("import")) {
             forced = true;
         }
 
