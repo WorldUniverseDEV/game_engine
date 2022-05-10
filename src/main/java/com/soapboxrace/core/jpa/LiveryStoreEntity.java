@@ -35,10 +35,10 @@ public class LiveryStoreEntity {
     private String liveryname;
     private String carname;
 
-    @OneToMany(mappedBy = "liverystore", targetEntity = LiveryStoreDataEntity.class, orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    /*@OneToMany(mappedBy = "liverystore", targetEntity = LiveryStoreDataEntity.class, orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @LazyCollection(LazyCollectionOption.FALSE)
     @Fetch(FetchMode.SUBSELECT)
-    private Set<LiveryStoreDataEntity> livery_data;
+    private Set<LiveryStoreDataEntity> livery_data;*/
 
     private LocalDateTime created;
 
@@ -57,8 +57,8 @@ public class LiveryStoreEntity {
     public String getCarname() { return carname; }
     public void setCarname(String carname) { this.carname = carname; }
 
-    public Set<LiveryStoreDataEntity> getData() { return livery_data; }
-    public void setData(Set<LiveryStoreDataEntity> livery_data) { this.livery_data = livery_data; }   
+    /*public Set<LiveryStoreDataEntity> getData() { return livery_data; }
+    public void setData(Set<LiveryStoreDataEntity> livery_data) { this.livery_data = livery_data; }*/
 
     public LocalDateTime getCreated() { return created; }
     public void setCreated(LocalDateTime created) { this.created = created; }
