@@ -8,19 +8,15 @@ import com.soapboxrace.core.jpa.*;
 import com.soapboxrace.core.dao.*;
 import com.soapboxrace.core.xmpp.*;
 
-import java.util.Set;
 import java.time.LocalDateTime;
 
 import javax.ejb.EJB;
 
 public class Livery {
     @EJB
-    private PersonaBO personaBO;
-
-    @EJB
     private LiveryStoreDAO liveryStoreDao;
 
-    public Response Command(OpenFireSoapBoxCli openFireSoapBoxCli, PersonaEntity personaEntity, String[] command) {
+    public Response Command(OpenFireSoapBoxCli openFireSoapBoxCli, PersonaEntity personaEntity, PersonaBO personaBO, String[] command) {
         //basic checks:
         Boolean forced = false;
         String commandParam = "";
@@ -57,14 +53,14 @@ public class Livery {
         //Real commands goes here:
         switch(commandParam.trim()) {
             case "import": openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORTING"), personaEntity.getPersonaId()); executeImport(openFireSoapBoxCli, liveryid, personaEntity, forced); break;
-            case "export": openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_EXPORTING"), personaEntity.getPersonaId()); executeExport(openFireSoapBoxCli, personaEntity); break;
+            case "export": openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_EXPORTING"), personaEntity.getPersonaId()); executeExport(openFireSoapBoxCli, personaEntity, personaBO); break;
             default: openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_MALFORMEDCOMMAND"), personaEntity.getPersonaId()); break;
         }
 
         return Response.noContent().build();
 	}
 
-    private void executeExport(OpenFireSoapBoxCli openFireSoapBoxCli, PersonaEntity personaEntity) {
+    private void executeExport(OpenFireSoapBoxCli openFireSoapBoxCli, PersonaEntity personaEntity, PersonaBO personaBO) {
         CarEntity userCar = personaBO.getDefaultCarEntity(personaEntity.getPersonaId());
 
         if(userCar != null) {
