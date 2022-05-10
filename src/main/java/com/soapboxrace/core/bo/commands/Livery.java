@@ -68,7 +68,7 @@ public class Livery {
             LiveryStoreEntity liveryStoreEntity = new LiveryStoreEntity();
             liveryStoreEntity.setPersona(personaEntity);
             liveryStoreEntity.setCode(HelpingTools.generateCode(6));
-            liveryStoreEntity.setData(null); //TODO: fetch user car and store compatible layers here
+            //liveryStoreEntity.setData(null); //TODO: fetch user car and store compatible layers here
             liveryStoreEntity.setCarname(userCar.getName());
             liveryStoreEntity.setCreated(LocalDateTime.now());
             liveryStoreDao.insert(liveryStoreEntity);
