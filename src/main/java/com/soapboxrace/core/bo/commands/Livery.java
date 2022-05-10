@@ -2,10 +2,24 @@ package com.soapboxrace.core.bo.commands;
 
 import javax.ws.rs.core.Response;
 
+import com.soapboxrace.core.bo.*;
+import com.soapboxrace.core.bo.util.HelpingTools;
 import com.soapboxrace.core.jpa.*;
+import com.soapboxrace.core.dao.*;
 import com.soapboxrace.core.xmpp.*;
 
+import java.util.Set;
+import java.time.LocalDateTime;
+
+import javax.ejb.EJB;
+
 public class Livery {
+    @EJB
+    private PersonaBO personaBO;
+
+    @EJB
+    private LiveryStoreDAO liveryStoreDao;
+
     public Response Command(OpenFireSoapBoxCli openFireSoapBoxCli, PersonaEntity personaEntity, String[] command) {
         //basic checks:
         Boolean forced = false;
@@ -37,19 +51,41 @@ public class Livery {
 
         //Real commands goes here:
         switch(commandParam.trim()) {
-            case "import": openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORTING"), personaEntity.getPersonaId()); executeImport(liveryid, personaEntity, forced); break;
-            case "export": openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_EXPORTING"), personaEntity.getPersonaId()); executeExport(personaEntity); break;
+            case "import": openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORTING"), personaEntity.getPersonaId()); executeImport(openFireSoapBoxCli, liveryid, personaEntity, forced); break;
+            case "export": openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_EXPORTING"), personaEntity.getPersonaId()); executeExport(openFireSoapBoxCli, personaEntity); break;
             default: openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_MALFORMEDCOMMAND"), personaEntity.getPersonaId()); break;
         }
 
         return Response.noContent().build();
 	}
 
-    private static void executeExport(PersonaEntity personaEntity) {
+    private void executeExport(OpenFireSoapBoxCli openFireSoapBoxCli, PersonaEntity personaEntity) {
+        CarEntity userCar = personaBO.getDefaultCarEntity(personaEntity.getPersonaId());
 
+        if(userCar != null) {
+            //Createaset
+
+            LiveryStoreEntity liveryStoreEntity = new LiveryStoreEntity();
+            liveryStoreEntity.setPersona(personaEntity);
+            liveryStoreEntity.setCode(HelpingTools.generateCode(6));
+            liveryStoreEntity.setData(null); //TODO: fetch user car and store compatible layers here
+            liveryStoreEntity.setCarname(userCar.getName());
+            liveryStoreEntity.setCreated(LocalDateTime.now());
+            liveryStoreDao.insert(liveryStoreEntity);
+
+            /*Set<VinylEntity> vinylsOnCar = userCar.getVinyls();
+            Integer counter = 1;
+            for (VinylEntity vinylEntity : vinylsOnCar) {
+                counter++;
+                
+            }*/
+
+        } else {
+            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_MALFORMEDCOMMAND"), personaEntity.getPersonaId());
+        }
     }
 
-    private static void executeImport(String liveryid, PersonaEntity personaEntity, Boolean forced) {
+    private void executeImport(OpenFireSoapBoxCli openFireSoapBoxCli, String liveryid, PersonaEntity personaEntity, Boolean forced) {
 
     }
 }

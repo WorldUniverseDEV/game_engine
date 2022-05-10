@@ -32,11 +32,14 @@ public class LiveryStoreEntity {
     private PersonaEntity persona;
 
     private String code;
+    private String liveryname;
+    private String carname;
 
     @OneToMany(mappedBy = "liverystore", targetEntity = LiveryStoreDataEntity.class, orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @LazyCollection(LazyCollectionOption.FALSE)
     @Fetch(FetchMode.SUBSELECT)
     private Set<LiveryStoreDataEntity> livery_data;
+
     private LocalDateTime created;
 
     public int getId() { return id; }
@@ -47,6 +50,12 @@ public class LiveryStoreEntity {
 
     public String getCode() { return code; }
     public void setCode(String code) { this.code = code; }
+
+    public String getLiveryname() { return liveryname; }
+    public void setLiveryname(String liveryname) { this.liveryname = liveryname; }
+
+    public String getCarname() { return carname; }
+    public void setCarname(String carname) { this.carname = carname; }
 
     public Set<LiveryStoreDataEntity> getData() { return livery_data; }
     public void setData(Set<LiveryStoreDataEntity> livery_data) { this.livery_data = livery_data; }   
