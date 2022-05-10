@@ -41,9 +41,9 @@ public class LiveryStoreDataEntity {
     private int var3;
     private int var4;
 
-    @OneToOne(targetEntity = LiveryStoreEntity.class, optional = false, fetch = FetchType.LAZY)
+    /*@OneToOne(targetEntity = LiveryStoreEntity.class, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "liverystoreId", referencedColumnName = "livery_data", foreignKey = @ForeignKey(name = "FK_LIVERYDATA_liverystoreId"))
-    private LiveryStoreEntity liverystoreId;
+    private LiveryStoreEntity liverystoreId;*/
 
     //geters and setters//
     public Long getId() {
@@ -230,11 +230,11 @@ public class LiveryStoreDataEntity {
         this.var4 = var4;
     }
 
-    public LiveryStoreEntity getLiverystoreId() {
+    /*public LiveryStoreEntity getLiverystoreId() {
         return liverystoreId;
     }
 
     public void setLiverystoreId(LiveryStoreEntity liverystoreId) {
         this.liverystoreId = liverystoreId;
-    }
+    }*/
 }
