@@ -35,15 +35,15 @@ public class SbrwXmppProvider implements XmppProvider {
 
     @PostConstruct
     public void init() {
-        sbrwxmppToken = parameterBO.getStrParam("SBRWXMPP_TOKEN");
-        sbrwxmppAddress = parameterBO.getStrParam("SBRWXMPP_ADDRESS");
+        sbrwxmppToken = parameterBO.getStrParam("OPENFIRE_TOKEN");
+        sbrwxmppAddress = parameterBO.getStrParam("OPENFIRE_ADDRESS");
         domain = parameterBO.getStrParam("XMPP_IP");
         client = ClientBuilder.newClient();
     }
 
     @Override
     public boolean isEnabled() {
-        return sbrwxmppToken != null && sbrwxmppAddress != null;
+        return parameterBO.getStrParam("XMPP_PROVIDER").equals("OPENFIRE");
     }
 
     private Builder getBuilder(String path) {
@@ -129,4 +129,4 @@ public class SbrwXmppProvider implements XmppProvider {
         }
         return personaList;
     }
-}
+}

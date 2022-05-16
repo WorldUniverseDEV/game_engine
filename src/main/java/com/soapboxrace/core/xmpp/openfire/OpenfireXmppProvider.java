@@ -64,7 +64,7 @@ public class OpenfireXmppProvider implements XmppProvider {
 
     @Override
     public boolean isEnabled() {
-        return openFireToken != null && openFireAddress != null;
+        return parameterBO.getStrParam("XMPP_PROVIDER").equals("OPENFIRE");
     }
 
     private Builder getBuilder(String path) {
@@ -182,4 +182,4 @@ public class OpenfireXmppProvider implements XmppProvider {
 
         builder.post(Entity.entity(mucRoomEntity, MediaType.APPLICATION_XML));
     }
-}
+}
