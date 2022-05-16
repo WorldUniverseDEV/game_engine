@@ -4,7 +4,7 @@
  * Copyright (c) 2020.
  */
 
-package com.soapboxrace.core.xmpp;
+package com.soapboxrace.core.xmpp.openfire;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

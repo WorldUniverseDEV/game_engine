@@ -1,4 +1,10 @@
-package com.soapboxrace.core.xmpp;
+/*
+ * This file is part of the Soapbox Race World core source code.
+ * If you use any of this code for third-party purposes, please provide attribution.
+ * Copyright (c) 2020.
+ */
+
+package com.soapboxrace.core.xmpp.openfire;
 
 import com.soapboxrace.core.bo.ParameterBO;
 import org.jivesoftware.smack.ReconnectionManager;
@@ -11,7 +17,6 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.slf4j.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
@@ -62,20 +67,14 @@ public class OpenFireConnector {
     }
 
     /**
-     * Initializes the {@link OpenFireConnector}.
+     * Connects to the XMPP server.
      */
-    @PostConstruct
-    public void init() {
+    public void connect() {
         this.ipAddress = parameterBO.getStrParam("XMPP_IP", "127.0.0.1");
         this.port = parameterBO.getIntParam("XMPP_PORT", 5222);
         this.engineToken = parameterBO.getStrParam("OPENFIRE_TOKEN");
         this.debugMode = parameterBO.getBoolParam("XMPP_DEBUG");
-    }
 
-    /**
-     * Connects to the XMPP server.
-     */
-    public void connect() {
         this.connection = new XMPPTCPConnection(getConnectionConfiguration());
         try {
             this.connection.connect();
