@@ -43,7 +43,7 @@ public class SbrwXmppProvider implements XmppProvider {
 
     @Override
     public boolean isEnabled() {
-        return parameterBO.getStrParam("XMPP_PROVIDER").equals("OPENFIRE");
+        return parameterBO.getStrParam("XMPP_PROVIDER").equals("SBRWXMPP");
     }
 
     private Builder getBuilder(String path) {
