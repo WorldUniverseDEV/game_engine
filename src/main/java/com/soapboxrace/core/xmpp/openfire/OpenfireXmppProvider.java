@@ -49,7 +49,7 @@ public class OpenfireXmppProvider implements XmppProvider {
         openFireToken = parameterBO.getStrParam("OPENFIRE_TOKEN");
         openFireAddress = parameterBO.getStrParam("OPENFIRE_ADDRESS");
         xmppIp = parameterBO.getStrParam("XMPP_IP");
-        if (openFireToken != null && openFireAddress != null) {
+        if (parameterBO.getStrParam("XMPP_PROVIDER").equals("OPENFIRE")) {
             createUpdatePersona("sbrw.engine.engine", openFireToken);
 
             for (ChatRoomEntity chatRoomEntity : chatRoomDAO.findAll()) {
