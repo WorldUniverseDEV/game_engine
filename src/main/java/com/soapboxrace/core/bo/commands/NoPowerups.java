@@ -59,6 +59,8 @@ public class NoPowerups {
                             }
                         }
                     }
+                } else {
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ALONE"), personaEntity.getPersonaId());
                 }
             } else if(getActiveLobbyId != 0L && getEventSessionId != 0) {
                 if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_WARNING_ONEVENT")) {
