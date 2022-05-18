@@ -36,18 +36,18 @@ public class NoPowerups {
                     return Response.noContent().build();
                 }
 
-                //Disable command if join time is less than 5 seconds
-                if(lobbyEntities.getLobbyCountdownInMilliseconds(lobbyEntities.getEvent().getLobbyCountdownTime()) <= 5000) {
-                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_VOTEENDED"), personaEntity.getPersonaId());
-                    return Response.noContent().build();
-                }
-
                 List<LobbyEntrantEntity> lobbyEntrants = lobbyEntities.getEntrants();
 
                 Integer totalVotes = lobbyEntrantDAO.getVotes(lobbyEntities)+1;
                 Integer totalUsersInLobby = lobbyEntrants == null ? 1 : lobbyEntrants.size();
 
                 if(totalUsersInLobby >= 2) {
+                //Disable command if join time is less than 5 seconds
+                    if(lobbyEntities.getLobbyCountdownInMilliseconds(lobbyEntities.getEvent().getLobbyCountdownTime()) <= 5000) {
+                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_VOTEENDED"), personaEntity.getPersonaId());
+                        return Response.noContent().build();
+                    }
+
                     if(lobbyEntrantDAO.getVoteStatus(personaEntity, lobbyEntities).getNopuMode()) {
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_WARNING_ALREADYVOTED"), personaEntity.getPersonaId());
                     } else {
