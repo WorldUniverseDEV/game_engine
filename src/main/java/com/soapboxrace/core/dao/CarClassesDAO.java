@@ -20,8 +20,7 @@ public class CarClassesDAO extends StringKeyedDAO<CarClassesEntity> {
     }
 
     public CarClassesEntity findByHash(int hash) {
-        TypedQuery<CarClassesEntity> query = entityManager.createQuery("SELECT obj FROM CarClassesEntity obj WHERE " +
-                "obj.hash = :hash", CarClassesEntity.class);
+        TypedQuery<CarClassesEntity> query = entityManager.createNamedQuery("CarClassesEntity.findByHash", CarClassesEntity.class);
         query.setParameter("hash", hash);
         try {
             return query.getSingleResult();
@@ -30,8 +29,7 @@ public class CarClassesDAO extends StringKeyedDAO<CarClassesEntity> {
     }
 
     public CarClassesEntity findByName(String name) {
-        TypedQuery<CarClassesEntity> query = entityManager.createQuery("SELECT obj FROM CarClassesEntity obj WHERE " +
-            "obj.storeName = :name", CarClassesEntity.class);
+        TypedQuery<CarClassesEntity> query = entityManager.createNamedQuery("CarClassesEntity.findByName", CarClassesEntity.class);
         query.setParameter("name", name);
         try {
             return query.getSingleResult();
