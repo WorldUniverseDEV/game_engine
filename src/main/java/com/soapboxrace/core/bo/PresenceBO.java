@@ -22,9 +22,6 @@ import java.util.List;
 @Startup
 @Lock(LockType.READ)
 public class PresenceBO {
-    // Game sends heartbeat message every 2 minutes. Set the presence to expire in 5 minutes.
-    private final int PRESENCE_EXPIRATION = 5*60;
-
     @EJB
     private RedisBO redisBO;
 
@@ -67,7 +64,7 @@ public class PresenceBO {
             Long currentPresence = this.getPresence(personaId);
 
             if (!currentPresence.equals(presence)) {
-                this.connection.sync().setex(getPresenceKey(personaId), PRESENCE_EXPIRATION, presence.toString());
+                this.connection.sync().setex(getPresenceKey(personaId), parameterBO.getIntParam("SBRWR_PRESENCEEXPIRATIONTIME", 3*60), presence.toString());
                 this.pubSubConnection.sync().publish("game_presence_updates", personaId + "|" + presence);
                 personaPresenceUpdatedEvent.fire(new PersonaPresenceUpdated(personaId, presence));
             }
@@ -80,7 +77,7 @@ public class PresenceBO {
      */
     public void refreshPresence(long personaId) {
         if (this.connection != null) {
-            this.connection.sync().expire(getPresenceKey(personaId), PRESENCE_EXPIRATION);
+            this.connection.sync().expire(getPresenceKey(personaId), parameterBO.getIntParam("SBRWR_PRESENCEEXPIRATIONTIME", 3*60));
         }
     }
 
