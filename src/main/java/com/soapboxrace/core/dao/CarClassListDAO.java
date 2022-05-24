@@ -24,4 +24,10 @@ public class CarClassListDAO extends StringKeyedDAO<CarClassListEntity> {
         TypedQuery<CarClassListEntity> query = this.entityManager.createNamedQuery("CarClassListEntity.findAll", CarClassListEntity.class);
         return query.getResultList();
     }
+
+    public CarClassListEntity findByRating(int rating) {
+        TypedQuery<CarClassListEntity> query = entityManager.createNamedQuery("CarClassListEntity.findByRating", CarClassListEntity.class);
+        query.setParameter("rating", rating);
+        return query.getSingleResult();
+    }
 }

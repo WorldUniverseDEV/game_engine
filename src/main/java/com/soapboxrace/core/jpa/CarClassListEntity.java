@@ -11,7 +11,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "CAR_CLASSLIST")
 @NamedQueries({
-    @NamedQuery(name = "CarClassListEntity.findAll", query = "SELECT c fROM CarClassListEntity c")
+    @NamedQuery(name = "CarClassListEntity.findByRating", query = "SELECT obj fROM CarClassListEntity obj WHERE obj.minVal <= :rating AND obj.maxVal >= :rating"),
+    @NamedQuery(name = "CarClassListEntity.findAll", query = "SELECT obj fROM CarClassListEntity obj")
 })
 public class CarClassListEntity {
 
