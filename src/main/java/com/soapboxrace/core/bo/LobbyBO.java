@@ -162,12 +162,17 @@ public class LobbyBO {
         LobbyEntity lobbyEntity = null;
         for (LobbyEntity lobbyEntityTmp : lobbys) {
             if (lobbyEntityTmp.getIsPrivate()) continue;
+
             EventEntity event = lobbyEntityTmp.getEvent();
             if (checkIgnoredEvents && matchmakingBO.isEventIgnored(personaEntity.getPersonaId(), event.getId()))
                 continue;
+
             int maxEntrants = event.getMaxPlayers();
             List<LobbyEntrantEntity> lobbyEntrants = lobbyEntityTmp.getEntrants();
             int entrantsSize = lobbyEntrants.size();
+
+            if(entrantsSize == maxEntrants) continue;
+
             if (entrantsSize < maxEntrants) {
                 lobbyEntity = lobbyEntityTmp;
                 if (!isPersonaInside(personaEntity.getPersonaId(), lobbyEntrants)) {
@@ -179,8 +184,12 @@ public class LobbyBO {
                 break;
             }
         }
+
         if (lobbyEntity != null) {
             lobbyMessagingBO.sendLobbyInvitation(lobbyEntity, personaEntity, 10000);
+        } else {
+            //requeue whole lobbies again.
+            joinLobby(personaEntity, lobbys);
         }
     }
 
