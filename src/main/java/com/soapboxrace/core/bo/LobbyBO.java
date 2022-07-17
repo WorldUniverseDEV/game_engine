@@ -189,7 +189,9 @@ public class LobbyBO {
             lobbyMessagingBO.sendLobbyInvitation(lobbyEntity, personaEntity, 10000);
         } else {
             //requeue whole lobbies again.
-            joinLobby(personaEntity, lobbys);
+            if(lobbys != null) {
+                joinLobby(personaEntity, lobbys, true);
+            }
         }
     }
 
