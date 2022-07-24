@@ -297,7 +297,9 @@ public class LobbyBO {
                             Integer totalVotesPercentage = Math.round((totalVotes * 100.0f) / totalUsersInLobby);
                             
                             if(totalVotesPercentage < parameterBO.getIntParam("SBRWR_NOPU_REQUIREDPERCENT")) {
-                                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_INFO_NOTENOUGHVOTES"), personaEntity.getPersonaId());
+                                if(parameterBO.getBoolParam("SBRWR_NOPU_SHOW_NOTENOUGHVOTES")) {
+                                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_INFO_NOTENOUGHVOTES"), personaEntity.getPersonaId());
+                                }
                             } else {
                                 openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_INFO_SUCCESS"), personaEntity.getPersonaId());
                             }
