@@ -171,8 +171,6 @@ public class LobbyBO {
             List<LobbyEntrantEntity> lobbyEntrants = lobbyEntityTmp.getEntrants();
             int entrantsSize = lobbyEntrants.size();
 
-            if(entrantsSize == maxEntrants) continue;
-
             if (entrantsSize < maxEntrants) {
                 lobbyEntity = lobbyEntityTmp;
                 if (!isPersonaInside(personaEntity.getPersonaId(), lobbyEntrants)) {
