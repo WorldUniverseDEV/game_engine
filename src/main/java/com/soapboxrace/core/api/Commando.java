@@ -71,7 +71,8 @@ public class Commando {
             case "debug":       new Debug().Commands(); break;
             case "ban":         //adopted from below
             case "kick":        //adopted from below
-            case "unban":       new AdminCommand().Commands(adminBO, personaEntity, command, webHook, openFireSoapBoxCli); break;
+            case "unban":       new AdminCommand().Command(adminBO, personaEntity, command, webHook, openFireSoapBoxCli); break;
+            case "livery":      new LiveryCommand().Command(command, openFireSoapBoxCli, personaEntity); break;
             default:            new DefaultCommand().Command(openFireSoapBoxCli, personaEntity, commandSplitted[0].trim()); break;
         }
         return Response.noContent().build();

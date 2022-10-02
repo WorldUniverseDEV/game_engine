@@ -8,7 +8,7 @@ import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
 import com.soapboxrace.core.xmpp.XmppChat;
 
 public class AdminCommand {
-    public Response Commands(AdminBO adminBO, PersonaEntity personaEntity, String command, Boolean webHook, OpenFireSoapBoxCli openFireSoapBoxCli) {
+    public Response Command(AdminBO adminBO, PersonaEntity personaEntity, String command, Boolean webHook, OpenFireSoapBoxCli openFireSoapBoxCli) {
         if (personaEntity != null && personaEntity.getUser().isAdmin()) {
             Boolean sendOrNot = webHook == null ? true : webHook;
             adminBO.sendChatCommand(personaEntity.getPersonaId(), command, personaEntity.getName(), sendOrNot);
