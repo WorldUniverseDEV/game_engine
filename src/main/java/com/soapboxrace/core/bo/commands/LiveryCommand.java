@@ -18,22 +18,16 @@ import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
 import com.soapboxrace.core.xmpp.XmppChat;
 
 public class LiveryCommand {
-    @EJB
-    private LiveryStoreDAO liveryStoreDao;
-
-    @EJB
-    private VinylDAO vinylDao;
-
-    @EJB
-    private LiveryStoreDataDAO liveryStoreDataDao;
-
-    @EJB
-    private ParameterBO parameterBO;
-
-    @EJB
-    private PersonaBO personaBO;
-
-    public Response Command(String command_unsplitted, OpenFireSoapBoxCli openFireSoapBoxCli, PersonaEntity personaEntity) {
+    public Response Command(
+        String command_unsplitted, 
+        OpenFireSoapBoxCli openFireSoapBoxCli, 
+        PersonaEntity personaEntity, 
+        LiveryStoreDAO liveryStoreDao, 
+        VinylDAO vinylDao, 
+        LiveryStoreDataDAO liveryStoreDataDao, 
+        ParameterBO parameterBO, 
+        PersonaBO personaBO
+    ) {
         /* Command construction 
          * 
          * livery import <code> (--force)
@@ -47,7 +41,7 @@ public class LiveryCommand {
         } else {
             if(command[1].trim().equals("import")) {                
                 if(command.length >= 3) {
-                    LiveryStoreEntity liveryStoreEntity = liveryStoreDao.findLiveryByCode(command[2]);
+                    LiveryStoreEntity liveryStoreEntity = liveryStoreDao.findLiveryByCode(command[2].trim());
                     if(liveryStoreEntity == null) {
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("That livery doesn't exists."), personaEntity.getPersonaId());
                     } else {

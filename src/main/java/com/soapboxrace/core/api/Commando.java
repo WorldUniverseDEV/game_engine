@@ -41,6 +41,15 @@ public class Commando {
     @EJB 
     private LobbyEntrantDAO lobbyEntrantDAO;
 
+    @EJB
+    private LiveryStoreDAO liveryStoreDao;
+
+    @EJB
+    private VinylDAO vinylDao;
+
+    @EJB
+    private LiveryStoreDataDAO liveryStoreDataDao;
+
     @POST
     public Response openfireHook(@HeaderParam("Authorization") String token, @QueryParam("cmd") String command, @QueryParam("pid") long persona, @QueryParam("webhook") Boolean webHook) {        
         //Verify the token first
@@ -72,7 +81,7 @@ public class Commando {
             case "ban":         //adopted from below
             case "kick":        //adopted from below
             case "unban":       new AdminCommand().Command(adminBO, personaEntity, command, webHook, openFireSoapBoxCli); break;
-            case "livery":      new LiveryCommand().Command(command, openFireSoapBoxCli, personaEntity); break;
+            case "livery":      new LiveryCommand().Command(command, openFireSoapBoxCli, personaEntity, liveryStoreDao, vinylDao, liveryStoreDataDao, parameterBO, personaBO); break;
             default:            new DefaultCommand().Command(openFireSoapBoxCli, personaEntity, commandSplitted[0].trim()); break;
         }
         return Response.noContent().build();
