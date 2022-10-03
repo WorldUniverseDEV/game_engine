@@ -85,7 +85,7 @@ public class LiveryCommand {
 
                             openFireSoapBoxCli.send(XmppChat.createSystemMessage("The livery has been imported, please enter safehouse to check the result"), personaEntity.getPersonaId());
                         } else {
-                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("Sorry, but this livery is not compatible with your current car in use, use `/livery import " + command[3] + " --force` to force the import."), personaEntity.getPersonaId());
+                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("Sorry, but this livery is not compatible with your current car in use, use `/livery import " + command[2].trim() + " --force` to force the import."), personaEntity.getPersonaId());
                         }
                     }
 
