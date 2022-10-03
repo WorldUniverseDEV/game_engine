@@ -12,7 +12,6 @@ import com.soapboxrace.core.bo.RequestSessionInfo;
 
 import javax.ejb.EJB;
 import javax.inject.Inject;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;

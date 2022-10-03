@@ -2,7 +2,6 @@ package com.soapboxrace.core.bo.commands;
 
 import java.time.LocalDateTime;
 
-import javax.ejb.EJB;
 import javax.ws.rs.core.Response;
 import java.util.Set;
 

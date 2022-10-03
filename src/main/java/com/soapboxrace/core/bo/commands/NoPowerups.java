@@ -54,8 +54,10 @@ public class NoPowerups {
                         lobbyEntrantDAO.updateVoteByPersonaAndLobby(personaEntity, lobbyEntities);
 
                         if(parameterBO.getBoolParam("SBRWR_NOPU_ENABLE_VOTEMESSAGES")) {
-                            for (LobbyEntrantEntity lobbyEntrant : lobbyEntrants) {
-                                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_USERVOTED," + personaEntity.getName() + "," + totalVotes + "," + totalUsersInLobby), lobbyEntrant.getPersona().getPersonaId());
+                            if(lobbyEntrants != null) {
+                                for (LobbyEntrantEntity lobbyEntrant : lobbyEntrants) {
+                                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_NOPU_USERVOTED," + personaEntity.getName() + "," + totalVotes + "," + totalUsersInLobby), lobbyEntrant.getPersona().getPersonaId());
+                                }
                             }
                         }
                     }
