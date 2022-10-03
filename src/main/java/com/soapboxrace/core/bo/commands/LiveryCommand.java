@@ -36,13 +36,13 @@ public class LiveryCommand {
         String[] command = command_unsplitted.split(" ");
         
         if(command.length < 2) {
-            openFireSoapBoxCli.send(XmppChat.createSystemMessage("No option provided, try using import or export"), personaEntity.getPersonaId());
+            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_NOOPTION"), personaEntity.getPersonaId());
         } else {
             if(command[1].trim().equals("import")) {                
                 if(command.length >= 3) {
                     LiveryStoreEntity liveryStoreEntity = liveryStoreDao.findLiveryByCode(command[2].trim());
                     if(liveryStoreEntity == null) {
-                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("That livery doesn't exists."), personaEntity.getPersonaId());
+                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_NONEXISTENT"), personaEntity.getPersonaId());
                     } else {
                         Boolean canImport = command_unsplitted.contains("--force");
 
@@ -56,7 +56,7 @@ public class LiveryCommand {
                             if(oldLiveries != null) {
                                 vinylDao.delete(oldLiveries);
                             }
-                            
+
                             //Add new ones to it
                             for (LiveryStoreDataEntity vinyl : liveryStoreDataDao.getVinylsByCode(command[3])) {
                                 VinylEntity DataEntity = new VinylEntity();
@@ -85,14 +85,14 @@ public class LiveryCommand {
                                 vinylDao.insert(DataEntity);
                             }
 
-                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("The livery has been imported, please enter safehouse to check the result"), personaEntity.getPersonaId());
+                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_SUCCESS"), personaEntity.getPersonaId());
                         } else {
-                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("Sorry, but this livery is not compatible with your current car in use, use `/livery import " + command[2].trim() + " --force` to force the import."), personaEntity.getPersonaId());
+                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_NOTCOMPATIBLE," + command[2].trim()), personaEntity.getPersonaId());
                         }
                     }
 
                 } else {
-                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("No livery name specified for import."), personaEntity.getPersonaId());
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_UNKNOWN"), personaEntity.getPersonaId());
                 }
             } else if(command[1].trim().equals("export")) {
                 //generate the code first
@@ -102,7 +102,7 @@ public class LiveryCommand {
                     Set<VinylEntity> vinyls = carEntity.getVinyls();
 
                     if(vinyls.size() == 0) {
-                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("You can't export livery, this car doesnt have any livery preinstalled on it."), personaEntity.getPersonaId());
+                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_EXPORT_NONEXISTENT"), personaEntity.getPersonaId());
                     } else {
                         String code = HelpingTools.generateCode(parameterBO.getIntParam("SBRWR_LIVERYCODE_LENGTH", 8));
 
@@ -145,13 +145,13 @@ public class LiveryCommand {
                             counter++;
                         }*/
 
-                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("Your livery is exported, your code is: " + code), personaEntity.getPersonaId());
+                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_EXPORT_SUCCESS" + code), personaEntity.getPersonaId());
                     }
                 } else {
-                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("You can't export livery, this car doesnt have any livery preinstalled on it."), personaEntity.getPersonaId());
+                    openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_EXPORT_NONEXISTENT"), personaEntity.getPersonaId());
                 }
             } else {
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("Invalid option, try using import or export"), personaEntity.getPersonaId());
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_NOOPTION"), personaEntity.getPersonaId());
             }
         }
 
