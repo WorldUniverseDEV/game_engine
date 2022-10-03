@@ -53,8 +53,10 @@ public class LiveryCommand {
                         if(canImport) {
                             //Remove current liveries
                             VinylEntity oldLiveries = vinylDao.findByCarId(personaBO.getDefaultCarEntity(personaEntity.getPersonaId()).getId());
-                            vinylDao.delete(oldLiveries);
-
+                            if(oldLiveries != null) {
+                                vinylDao.delete(oldLiveries);
+                            }
+                            
                             //Add new ones to it
                             for (LiveryStoreDataEntity vinyl : liveryStoreDataDao.getVinylsByCode(command[3])) {
                                 VinylEntity DataEntity = new VinylEntity();
