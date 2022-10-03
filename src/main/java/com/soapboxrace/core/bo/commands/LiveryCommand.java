@@ -44,9 +44,10 @@ public class LiveryCommand {
                     if(liveryStoreEntity == null) {
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("That livery doesn't exists."), personaEntity.getPersonaId());
                     } else {
-                        Boolean canImport = personaBO.getDefaultCarEntity(personaEntity.getPersonaId()).getName().equals(liveryStoreEntity.getCarname());
-                        if(command.length == 4) {
-                            canImport = command[3].equals("--force");
+                        Boolean canImport = command_unsplitted.contains("--force");
+
+                        if(canImport == false) {
+                            canImport = personaBO.getDefaultCarEntity(personaEntity.getPersonaId()).getName().equals(liveryStoreEntity.getCarname());
                         }
 
                         if(canImport) {
@@ -101,7 +102,7 @@ public class LiveryCommand {
                     if(vinyls.size() == 0) {
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("You can't export livery, this car doesnt have any livery preinstalled on it."), personaEntity.getPersonaId());
                     } else {
-                        String code = HelpingTools.generateCode(parameterBO.getIntParam("SBRWR_LIVERYCODE_LENGTH", 8));
+                        /*String code = HelpingTools.generateCode(parameterBO.getIntParam("SBRWR_LIVERYCODE_LENGTH", 8));
 
                         LiveryStoreEntity liveryStoreEntity = new LiveryStoreEntity();
                         liveryStoreEntity.setPersonaId(personaEntity.getPersonaId());
@@ -140,7 +141,7 @@ public class LiveryCommand {
                             DataEntity.setLiverycode(code);
                             liveryStoreDataDao.insert(DataEntity);
                             counter++;
-                        }
+                        }*/
 
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("Your livery is exported, your code is: " + code), personaEntity.getPersonaId());
                     }
