@@ -102,9 +102,9 @@ public class LiveryCommand {
                     if(vinyls.size() == 0) {
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("You can't export livery, this car doesnt have any livery preinstalled on it."), personaEntity.getPersonaId());
                     } else {
-                        /*String code = HelpingTools.generateCode(parameterBO.getIntParam("SBRWR_LIVERYCODE_LENGTH", 8));
+                        String code = HelpingTools.generateCode(parameterBO.getIntParam("SBRWR_LIVERYCODE_LENGTH", 8));
 
-                        LiveryStoreEntity liveryStoreEntity = new LiveryStoreEntity();
+                        /*LiveryStoreEntity liveryStoreEntity = new LiveryStoreEntity();
                         liveryStoreEntity.setPersonaId(personaEntity.getPersonaId());
                         liveryStoreEntity.setCode(code);
                         liveryStoreEntity.setCreated(LocalDateTime.now());
