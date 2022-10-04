@@ -145,7 +145,7 @@ public class LiveryCommand {
                             counter++;
                         }*/
 
-                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_EXPORT_SUCCESS" + code), personaEntity.getPersonaId());
+                        openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_EXPORT_SUCCESS," + code), personaEntity.getPersonaId());
                     }
                 } else {
                     openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_EXPORT_NONEXISTENT"), personaEntity.getPersonaId());
