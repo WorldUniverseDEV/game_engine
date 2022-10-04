@@ -49,10 +49,23 @@ public class HelpingTools {
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
         
+        int sep = 1;
+        
         for(int i = 0; i < length; i++) {
             int index = random.nextInt(alphabet.length());
             char randomChar = alphabet.charAt(index);
             sb.append(randomChar);
+            
+            if(sep == 3) {
+                sb.append('-');
+                sep = 0;
+            }
+            
+            sep++;
+        }
+        
+        if(sb.charAt(sb.length() - 1) == '-') {
+            return sb.toString().substring(0, sb.toString().length() - 1);
         }
 
         return sb.toString();

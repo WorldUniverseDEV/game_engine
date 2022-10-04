@@ -40,7 +40,8 @@ public class LiveryCommand {
         } else {
             if(command[1].trim().equals("import")) {                
                 if(command.length >= 3) {
-                    LiveryStoreEntity liveryStoreEntity = liveryStoreDao.findLiveryByCode(command[2].trim());
+                    String liverycode = command[2].trim();
+                    LiveryStoreEntity liveryStoreEntity = liveryStoreDao.findLiveryByCode(liverycode);
                     if(liveryStoreEntity == null) {
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_NONEXISTENT"), personaEntity.getPersonaId());
                     } else {
@@ -58,7 +59,7 @@ public class LiveryCommand {
                             }
 
                             //Add new ones to it
-                            for (LiveryStoreDataEntity vinyl : liveryStoreDataDao.getVinylsByCode(command[3])) {
+                            for (LiveryStoreDataEntity vinyl : liveryStoreDataDao.getVinylsByCode(liverycode)) {
                                 VinylEntity DataEntity = new VinylEntity();
                                 DataEntity.setCar(personaBO.getDefaultCarEntity(personaEntity.getPersonaId()));
                                 DataEntity.setHash(vinyl.getHash());
@@ -87,7 +88,7 @@ public class LiveryCommand {
 
                             openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_SUCCESS"), personaEntity.getPersonaId());
                         } else {
-                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_NOTCOMPATIBLE," + command[2].trim()), personaEntity.getPersonaId());
+                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_NOTCOMPATIBLE," + liverycode), personaEntity.getPersonaId());
                         }
                     }
 
