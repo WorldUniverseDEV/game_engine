@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import javax.ws.rs.core.Response;
 import java.util.Set;
+import java.util.HashSet;
 
 import com.soapboxrace.core.jpa.CarEntity;
 import com.soapboxrace.core.jpa.LiveryStoreDataEntity;
@@ -34,7 +35,8 @@ public class LiveryCommand {
         */
 
         String[] command = command_unsplitted.split(" ");
-        
+        CarEntity carEntity = personaBO.getDefaultCarEntity(personaEntity.getPersonaId());
+
         if(command.length < 2) {
             openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_NOOPTION"), personaEntity.getPersonaId());
         } else {
@@ -48,20 +50,16 @@ public class LiveryCommand {
                         Boolean canImport = command_unsplitted.contains("--force");
 
                         if(canImport == false) {
-                            canImport = personaBO.getDefaultCarEntity(personaEntity.getPersonaId()).getName().equals(liveryStoreEntity.getCarname());
+                            canImport = carEntity.getName().equals(liveryStoreEntity.getCarname());
                         }
 
                         if(canImport) {
-                            //Remove current liveries
-                            VinylEntity oldLiveries = vinylDao.findByCarId(personaBO.getDefaultCarEntity(personaEntity.getPersonaId()).getId());
-                            if(oldLiveries != null) {
-                                vinylDao.delete(oldLiveries);
-                            }
+                            Set<VinylEntity> vinylEntityList = new HashSet<>();
 
                             //Add new ones to it
                             for (LiveryStoreDataEntity vinyl : liveryStoreDataDao.getVinylsByCode(liverycode)) {
                                 VinylEntity DataEntity = new VinylEntity();
-                                DataEntity.setCar(personaBO.getDefaultCarEntity(personaEntity.getPersonaId()));
+                                DataEntity.setCar(carEntity);
                                 DataEntity.setHash(vinyl.getHash());
                                 DataEntity.setHue1(vinyl.getHue1());
                                 DataEntity.setHue2(vinyl.getHue2());
@@ -83,7 +81,14 @@ public class LiveryCommand {
                                 DataEntity.setVar2(vinyl.getVar2());
                                 DataEntity.setVar3(vinyl.getVar3());
                                 DataEntity.setVar4(vinyl.getVar4());
-                                vinylDao.insert(DataEntity);
+                                vinylEntityList.add(DataEntity);
+                            }
+
+                            if (carEntity.getVinyls() == null) {
+                                carEntity.setVinyls(vinylEntityList);
+                            } else {
+                                carEntity.getVinyls().clear();
+                                carEntity.getVinyls().addAll(vinylEntityList);
                             }
 
                             openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_SUCCESS"), personaEntity.getPersonaId());
@@ -97,7 +102,6 @@ public class LiveryCommand {
                 }
             } else if(command[1].trim().equals("export")) {
                 //generate the code first
-                CarEntity carEntity = personaBO.getDefaultCarEntity(personaEntity.getPersonaId());
 
                 if(carEntity != null) {
                     Set<VinylEntity> vinyls = carEntity.getVinyls();
@@ -107,14 +111,14 @@ public class LiveryCommand {
                     } else {
                         String code = HelpingTools.generateCode(parameterBO.getIntParam("SBRWR_LIVERYCODE_LENGTH", 8));
 
-                        /*LiveryStoreEntity liveryStoreEntity = new LiveryStoreEntity();
+                        LiveryStoreEntity liveryStoreEntity = new LiveryStoreEntity();
                         liveryStoreEntity.setPersonaId(personaEntity.getPersonaId());
                         liveryStoreEntity.setCode(code);
                         liveryStoreEntity.setCreated(LocalDateTime.now());
                         liveryStoreEntity.setCarname(carEntity.getName());
                         liveryStoreDao.insert(liveryStoreEntity);
 
-                        Integer counter = 1;
+                        /*Integer counter = 1;
         
                         //now lets save car vinyls, but first, fetch them!
                         for (VinylEntity vinyl : vinyls) {
