@@ -54,7 +54,10 @@ public class LiveryCommand {
                         }
 
                         if(canImport) {
-                            Set<VinylEntity> vinylEntityList = new HashSet<>();
+                            VinylEntity oldLiveries = vinylDao.findByCarId(carEntity.getId());
+                            if(oldLiveries != null) {
+                                vinylDao.delete(oldLiveries);
+                            }
 
                             //Add new ones to it
                             for (LiveryStoreDataEntity vinyl : liveryStoreDataDao.getVinylsByCode(liverycode)) {
@@ -81,14 +84,7 @@ public class LiveryCommand {
                                 DataEntity.setVar2(vinyl.getVar2());
                                 DataEntity.setVar3(vinyl.getVar3());
                                 DataEntity.setVar4(vinyl.getVar4());
-                                vinylEntityList.add(DataEntity);
-                            }
-
-                            if (carEntity.getVinyls() == null) {
-                                carEntity.setVinyls(vinylEntityList);
-                            } else {
-                                carEntity.getVinyls().clear();
-                                carEntity.getVinyls().addAll(vinylEntityList);
+                                vinylDao.insert(DataEntity);
                             }
 
                             openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_SUCCESS"), personaEntity.getPersonaId());
@@ -118,7 +114,7 @@ public class LiveryCommand {
                         liveryStoreEntity.setCarname(carEntity.getName());
                         liveryStoreDao.insert(liveryStoreEntity);
 
-                        /*Integer counter = 1;
+                        Integer counter = 1;
         
                         //now lets save car vinyls, but first, fetch them!
                         for (VinylEntity vinyl : vinyls) {
@@ -148,7 +144,7 @@ public class LiveryCommand {
                             DataEntity.setLiverycode(code);
                             liveryStoreDataDao.insert(DataEntity);
                             counter++;
-                        }*/
+                        }
 
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_EXPORT_SUCCESS," + code), personaEntity.getPersonaId());
                     }
