@@ -47,10 +47,10 @@ public class LiveryCommand {
                     if(liveryStoreEntity == null) {
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_NONEXISTENT"), personaEntity.getPersonaId());
                     } else {
-                        Boolean canImport = command_unsplitted.contains("--force");
+                        Boolean canImport = carEntity.getName().trim().equals(liveryStoreEntity.getCarname());
 
-                        if(canImport == false) {
-                            canImport = carEntity.getName().equals(liveryStoreEntity.getCarname());
+                        if(!canImport) {
+                            canImport = command_unsplitted.contains("--force");
                         }
 
                         if(canImport) {
