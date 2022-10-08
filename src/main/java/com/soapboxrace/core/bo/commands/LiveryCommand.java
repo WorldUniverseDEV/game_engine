@@ -119,6 +119,7 @@ public class LiveryCommand {
                         liveryStoreEntity.setCode(code);
                         liveryStoreEntity.setCreated(LocalDateTime.now());
                         liveryStoreEntity.setCarname(carEntity.getName());
+                        liveryStoreEntity.setIsbanned(false);
                         liveryStoreDao.insert(liveryStoreEntity);
 
                         Integer counter = 1;
