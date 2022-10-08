@@ -22,4 +22,5 @@ public class LiveryStoreEntity {
     @Getter @Setter private LocalDateTime created;
     @Getter @Setter private String liveryname;
     @Getter @Setter private String carname;
+    @Getter @Setter private Boolean isbanned;
 }

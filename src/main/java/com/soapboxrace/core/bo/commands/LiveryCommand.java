@@ -47,49 +47,53 @@ public class LiveryCommand {
                     if(liveryStoreEntity == null) {
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_NONEXISTENT"), personaEntity.getPersonaId());
                     } else {
-                        Boolean canImport = carEntity.getName().trim().equals(liveryStoreEntity.getCarname());
-
-                        if(!canImport) {
-                            canImport = command_unsplitted.contains("--force");
-                        }
-
-                        if(canImport) {
-                            VinylEntity oldLiveries = vinylDao.findByCarId(carEntity.getId());
-                            if(oldLiveries != null) {
-                                vinylDao.delete(oldLiveries);
-                            }
-
-                            //Add new ones to it
-                            for (LiveryStoreDataEntity vinyl : liveryStoreDataDao.getVinylsByCode(liverycode)) {
-                                VinylEntity DataEntity = new VinylEntity();
-                                DataEntity.setCar(carEntity);
-                                DataEntity.setHash(vinyl.getHash());
-                                DataEntity.setHue1(vinyl.getHue1());
-                                DataEntity.setHue2(vinyl.getHue2());
-                                DataEntity.setHue3(vinyl.getHue3());
-                                DataEntity.setHue4(vinyl.getHue4());
-                                DataEntity.setLayer(vinyl.getLayer());
-                                DataEntity.setMir(vinyl.isMir());
-                                DataEntity.setRot(vinyl.getRot());
-                                DataEntity.setSat1(vinyl.getSat1());
-                                DataEntity.setSat2(vinyl.getSat2());
-                                DataEntity.setSat3(vinyl.getSat3());
-                                DataEntity.setSat4(vinyl.getSat4());
-                                DataEntity.setScalex(vinyl.getScalex());
-                                DataEntity.setScaley(vinyl.getScaley());
-                                DataEntity.setShear(vinyl.getShear());
-                                DataEntity.setTranx(vinyl.getTranx());
-                                DataEntity.setTrany(vinyl.getTrany());
-                                DataEntity.setVar1(vinyl.getVar1());
-                                DataEntity.setVar2(vinyl.getVar2());
-                                DataEntity.setVar3(vinyl.getVar3());
-                                DataEntity.setVar4(vinyl.getVar4());
-                                vinylDao.insert(DataEntity);
-                            }
-
-                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_SUCCESS"), personaEntity.getPersonaId());
+                        if(liveryStoreEntity.getIsbanned() == true) {
+                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_BANNED"), personaEntity.getPersonaId());
                         } else {
-                            openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_NOTCOMPATIBLE," + liverycode), personaEntity.getPersonaId());
+                            Boolean canImport = carEntity.getName().trim().equals(liveryStoreEntity.getCarname());
+
+                            if(!canImport) {
+                                canImport = command_unsplitted.contains("--force");
+                            }
+
+                            if(canImport) {
+                                VinylEntity oldLiveries = vinylDao.findByCarId(carEntity.getId());
+                                if(oldLiveries != null) {
+                                    vinylDao.delete(oldLiveries);
+                                }
+
+                                //Add new ones to it
+                                for (LiveryStoreDataEntity vinyl : liveryStoreDataDao.getVinylsByCode(liverycode)) {
+                                    VinylEntity DataEntity = new VinylEntity();
+                                    DataEntity.setCar(carEntity);
+                                    DataEntity.setHash(vinyl.getHash());
+                                    DataEntity.setHue1(vinyl.getHue1());
+                                    DataEntity.setHue2(vinyl.getHue2());
+                                    DataEntity.setHue3(vinyl.getHue3());
+                                    DataEntity.setHue4(vinyl.getHue4());
+                                    DataEntity.setLayer(vinyl.getLayer());
+                                    DataEntity.setMir(vinyl.isMir());
+                                    DataEntity.setRot(vinyl.getRot());
+                                    DataEntity.setSat1(vinyl.getSat1());
+                                    DataEntity.setSat2(vinyl.getSat2());
+                                    DataEntity.setSat3(vinyl.getSat3());
+                                    DataEntity.setSat4(vinyl.getSat4());
+                                    DataEntity.setScalex(vinyl.getScalex());
+                                    DataEntity.setScaley(vinyl.getScaley());
+                                    DataEntity.setShear(vinyl.getShear());
+                                    DataEntity.setTranx(vinyl.getTranx());
+                                    DataEntity.setTrany(vinyl.getTrany());
+                                    DataEntity.setVar1(vinyl.getVar1());
+                                    DataEntity.setVar2(vinyl.getVar2());
+                                    DataEntity.setVar3(vinyl.getVar3());
+                                    DataEntity.setVar4(vinyl.getVar4());
+                                    vinylDao.insert(DataEntity);
+                                }
+
+                                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_SUCCESS"), personaEntity.getPersonaId());
+                            } else {
+                                openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_IMPORT_NOTCOMPATIBLE," + liverycode), personaEntity.getPersonaId());
+                            }
                         }
                     }
 
