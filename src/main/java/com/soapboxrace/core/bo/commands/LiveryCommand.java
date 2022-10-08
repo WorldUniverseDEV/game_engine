@@ -120,7 +120,7 @@ public class LiveryCommand {
                         liveryStoreEntity.setCreated(LocalDateTime.now());
                         liveryStoreEntity.setCarname(carEntity.getName());
                         liveryStoreEntity.setIsbanned(false);
-                        LiveryStoreEntity.setUsedtimes(0);
+                        LiveryStoreEntity.setUsedtimes(0L);
                         liveryStoreDao.insert(liveryStoreEntity);
 
                         Integer counter = 1;
