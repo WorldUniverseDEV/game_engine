@@ -57,9 +57,6 @@ public class LiveryCommand {
                             }
 
                             if(canImport) {
-                                liveryStoreEntity.setUsedtimes(liveryStoreEntity.getUsedtimes() + 1);
-                                liveryStoreDao.update(liveryStoreEntity);
-
                                 VinylEntity oldLiveries = vinylDao.findByCarId(carEntity.getId());
                                 if(oldLiveries != null) {
                                     vinylDao.deleteByCar(carEntity);
@@ -120,7 +117,6 @@ public class LiveryCommand {
                         liveryStoreEntity.setCreated(LocalDateTime.now());
                         liveryStoreEntity.setCarname(carEntity.getName());
                         liveryStoreEntity.setIsbanned(false);
-                        LiveryStoreEntity.setUsedtimes(0L);
                         liveryStoreDao.insert(liveryStoreEntity);
 
                         Integer counter = 1;

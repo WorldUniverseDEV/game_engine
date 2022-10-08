@@ -23,5 +23,4 @@ public class LiveryStoreEntity {
     @Getter @Setter private String liveryname;
     @Getter @Setter private String carname;
     @Getter @Setter private Boolean isbanned;
-    @Getter @Setter private Long usedtimes;
 }
