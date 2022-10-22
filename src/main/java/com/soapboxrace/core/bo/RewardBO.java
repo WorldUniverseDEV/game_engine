@@ -137,7 +137,7 @@ public class RewardBO {
         personaDao.update(personaEntity);
 
         if(dscIsLeveledUp == true) {
-            String constructMsg_ds = "**" + personaEntity.getName() + "** just achieved Level **" + (personaEntity.getLevel() + 1) + "**";
+            String constructMsg_ds = "**" + personaEntity.getName() + "** just achieved Level **" + personaEntity.getLevel() + "**";
 
             if(parameterBO.getStrParam("DISCORD_WEBHOOK_LEVEL_URL") != null) {
                 discord.sendMessage(constructMsg_ds, 
