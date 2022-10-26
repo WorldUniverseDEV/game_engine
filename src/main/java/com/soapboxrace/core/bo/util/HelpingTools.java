@@ -1,10 +1,31 @@
 package com.soapboxrace.core.bo.util;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 
+import javax.ejb.EJB;
+
+import com.soapboxrace.core.jpa.*;
+import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
+import com.soapboxrace.jaxb.xmpp.AchievementAwarded;
+import com.soapboxrace.jaxb.xmpp.AchievementsAwarded;
+import com.soapboxrace.core.dao.*;
+
+import java.time.LocalDate;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.time.ZoneId;
+
 public class HelpingTools {
+    @EJB
+    private OpenFireSoapBoxCli openFireSoapBoxCli;
+
+    @EJB
+    private PersonaDAO personaDAO;
+    
     public static Boolean isNullOrEmptyCheck(String string) {
         if (string == null || string.trim().isEmpty()) { 
             return true;
@@ -70,4 +91,40 @@ public class HelpingTools {
 
         return sb.toString();
     }
+    
+    public static void broadcastUICustom(PersonaEntity personaEntity, String text, String description, int seconds, OpenFireSoapBoxCli openFireSoapBoxCli) {
+		AchievementsAwarded achievementsAwarded = new AchievementsAwarded();
+		achievementsAwarded.setPersonaId(personaEntity.getPersonaId());
+		achievementsAwarded.setScore(personaEntity.getScore());
+		AchievementAwarded achievementAwarded = new AchievementAwarded();
+
+		String achievedOnStr = "0001-01-01T00:00:00";
+
+		try {
+			LocalDate date = LocalDate.now();
+			GregorianCalendar gcal = GregorianCalendar.from(date.atStartOfDay(ZoneId.systemDefault()));
+			XMLGregorianCalendar xmlCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gcal);
+			xmlCalendar.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
+			achievedOnStr = xmlCalendar.toXMLFormat();
+		} catch (Exception e) {
+			System.err.println("xml calendar str error");
+		}
+
+		achievementAwarded.setAchievedOn(achievedOnStr);
+		achievementAwarded.setAchievementDefinitionId((long) 104);
+		achievementAwarded.setClip("AchievementFlasherBase");
+		achievementAwarded.setClipLengthInSeconds(seconds);
+		achievementAwarded.setDescription(description);
+		achievementAwarded.setIcon("BADGE18");
+		achievementAwarded.setName(text);
+		achievementAwarded.setPoints(0);
+		achievementAwarded.setRare(false);
+		achievementAwarded.setRarity(0);
+
+		ArrayList<AchievementAwarded> achievements = new ArrayList<>();
+		achievements.add(achievementAwarded);
+
+		achievementsAwarded.setAchievements(achievements);
+		openFireSoapBoxCli.send(achievementsAwarded, personaEntity.getPersonaId());
+	}
 }

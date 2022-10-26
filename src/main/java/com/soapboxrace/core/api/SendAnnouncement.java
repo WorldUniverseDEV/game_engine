@@ -8,7 +8,9 @@ package com.soapboxrace.core.api;
 
 import com.soapboxrace.core.bo.AchievementBO;
 import com.soapboxrace.core.bo.ParameterBO;
+import com.soapboxrace.core.bo.util.HelpingTools;
 import com.soapboxrace.core.xmpp.OpenFireRestApiCli;
+import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
 import com.soapboxrace.core.jpa.PersonaEntity;
 import com.soapboxrace.core.dao.PersonaDAO;
 
@@ -36,6 +38,9 @@ public class SendAnnouncement {
     @EJB
     private AchievementBO achievementBo;
 
+    @EJB
+    private OpenFireSoapBoxCli openFireSoapBoxCli;
+
     @POST
     @Produces(MediaType.TEXT_HTML)
     @Path("/Announcement")
@@ -57,19 +62,19 @@ public class SendAnnouncement {
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Path("/Alert")
-    public String sendAlert(@QueryParam("announcementAuth") String token, @QueryParam("message") String message, @QueryParam("username") String personaName) {
+    public String sendAlert(@QueryParam("announcementAuth") String token, @QueryParam("message") String message, @QueryParam("pid") Long personaId) {
         String announcementToken = parameterBO.getStrParam("ANNOUNCEMENT_AUTH");
         if (announcementToken == null) {
             return "ERROR! no announcement token set in DB";
         }
 
         if (announcementToken.equals(token)) {
-            PersonaEntity personaEntity = personaDAO.findByName(personaName);
+            PersonaEntity personaEntity = personaDAO.find(personaId);
             if(personaEntity == null) {
                 return "ERROR! User not found!";
             }
             
-            achievementBo.broadcastUICustom(personaEntity.getPersonaId(), message, "ADMINALERT", 5);
+            HelpingTools.broadcastUICustom(personaEntity, message, "ADMINALERT", 5, openFireSoapBoxCli);
             return "SUCCESS!";
         } else {
             return "ERROR! invalid admin token";
