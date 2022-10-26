@@ -109,7 +109,7 @@ public class LiveryCommand {
                     if(vinyls.size() == 0) {
                         openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_EXPORT_NONEXISTENT"), personaEntity.getPersonaId());
                     } else {
-                        String code = HelpingTools.generateCode(parameterBO.getIntParam("SBRWR_LIVERYCODE_LENGTH", 8));
+                        String code = generatedCode(parameterBO.getIntParam("SBRWR_LIVERYCODE_LENGTH", 8), liveryStoreDao);
 
                         LiveryStoreEntity liveryStoreEntity = new LiveryStoreEntity();
                         liveryStoreEntity.setPersonaId(personaEntity.getPersonaId());
@@ -163,4 +163,10 @@ public class LiveryCommand {
 
         return Response.noContent().build();
 	}
+
+    public String generatedCode(int length, LiveryStoreDAO liveryStoreDao) {
+        String checkCode = HelpingTools.generateCode(length);
+        LiveryStoreEntity liveryStoreEntity = liveryStoreDao.findLiveryByCode(checkCode);
+        return (liveryStoreEntity == null) ? checkCode : generatedCode(length, liveryStoreDao);
+    }
 }

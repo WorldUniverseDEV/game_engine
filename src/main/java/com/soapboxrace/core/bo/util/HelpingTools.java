@@ -66,7 +66,7 @@ public class HelpingTools {
     }
 
     public static String generateCode(int length) {
-        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        String alphabet = "ABCDEFGHIJKLMNPQRSTUVWXYZ0123456789";
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
         
