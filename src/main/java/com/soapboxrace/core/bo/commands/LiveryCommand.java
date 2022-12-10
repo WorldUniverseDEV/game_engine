@@ -166,6 +166,14 @@ public class LiveryCommand {
 
     public String generatedCode(int length, LiveryStoreDAO liveryStoreDao) {
         String checkCode = HelpingTools.generateCode(length);
+        String bannedWords = "ass;azz;c0c;coc;cok;cox;cum;dak;dic;dik;diq;dlc;dlk;dlq;dyc;f@G;f0k;fag;faj;fap;fck;fkg;fkn;fku;fok;fuc;fud;fuk;fuo;fuq;fux;fvc;fvk;gay;haj;h-o;jap;jig;jiw;jiz;jlg;joi;juw;kkk";
+
+        for (String singleword : bannedWords.split(";")) {
+            if(checkCode.contains(singleword)) {
+                return generatedCode(length, liveryStoreDao);
+            }
+        }
+
         LiveryStoreEntity liveryStoreEntity = liveryStoreDao.findLiveryByCode(checkCode);
         return (liveryStoreEntity == null) ? checkCode : generatedCode(length, liveryStoreDao);
     }
