@@ -23,18 +23,22 @@ public class Api {
     @GET
     @Path("/getCarByID")
     @Produces(MediaType.APPLICATION_XML)
-    public CarEntity getCarByID(@QueryParam("carId") Long carID, @QueryParam("adminAuth") String token) {
+    public Response getCarByID(@QueryParam("carId") Long carID, @QueryParam("adminAuth") String token) {
         String adminToken = parameterBO.getStrParam("ADMIN_AUTH");
 
         if (adminToken == null) {
-            return new CarEntity();
+            return Response.ok().entity("Missing ADMIN_AUTH").build();
         }
 
         if (!adminToken.equals(token)) {
-            return new CarEntity();
+            return Response.ok().entity("Invalid ADMIN_AUTH").build();
         }
 
-        return carDAO.find(carID);
+        if(carID == null) {
+            return Response.ok().entity("Missing carId param").build();
+        }
+
+        return Response.ok().entity(carDAO.find(carID)).build();
     }
 }
  
