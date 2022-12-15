@@ -1,4 +1,4 @@
-package com.soapboxrace.core.bo.commands;
+package com.soapboxrace.core.commands;
 
 import com.soapboxrace.core.bo.*;
 import com.soapboxrace.core.jpa.*;

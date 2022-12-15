@@ -1,7 +1,7 @@
 package com.soapboxrace.core.api;
 
-import com.soapboxrace.core.api.commands.*;
 import com.soapboxrace.core.bo.*;
+import com.soapboxrace.core.commands.*;
 import com.soapboxrace.core.dao.*;
 import com.soapboxrace.core.jpa.*;
 import com.soapboxrace.core.xmpp.*;
