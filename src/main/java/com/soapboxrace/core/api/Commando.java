@@ -1,11 +1,10 @@
 package com.soapboxrace.core.api;
 
+import com.soapboxrace.core.api.commands.*;
 import com.soapboxrace.core.bo.*;
 import com.soapboxrace.core.dao.*;
 import com.soapboxrace.core.jpa.*;
 import com.soapboxrace.core.xmpp.*;
-
-import com.soapboxrace.core.bo.commands.*;
 
 import javax.ejb.EJB;
 import javax.ws.rs.HeaderParam;
@@ -48,6 +47,9 @@ public class Commando {
     private VinylDAO vinylDao;
 
     @EJB
+    private VinylProductDAO vinylProductDAO;
+
+    @EJB
     private LiveryStoreDataDAO liveryStoreDataDao;
 
     @POST
@@ -81,7 +83,8 @@ public class Commando {
             case "ban":         //adopted from below
             case "kick":        //adopted from below
             case "unban":       new AdminCommand().Command(adminBO, personaEntity, command, webHook, openFireSoapBoxCli); break;
-            case "livery":      new LiveryCommand().Command(command, openFireSoapBoxCli, personaEntity, liveryStoreDao, vinylDao, liveryStoreDataDao, parameterBO, personaBO); break;
+            case "livery":      new LiveryCommand().Command(command, openFireSoapBoxCli, personaEntity, liveryStoreDao, vinylDao, liveryStoreDataDao, parameterBO, personaBO, vinylProductDAO); break;
+            case "carid":       new CarIdCommand().Command(openFireSoapBoxCli, personaEntity, personaBO); break;
             default:            new DefaultCommand().Command(openFireSoapBoxCli, personaEntity, commandSplitted[0].trim()); break;
         }
         return Response.noContent().build();

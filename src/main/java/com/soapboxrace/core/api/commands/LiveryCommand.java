@@ -1,15 +1,14 @@
-package com.soapboxrace.core.bo.commands;
+package com.soapboxrace.core.api.commands;
 
 import java.time.LocalDateTime;
 
 import javax.ws.rs.core.Response;
-import java.util.Set;
 
-import com.soapboxrace.core.jpa.CarEntity;
-import com.soapboxrace.core.jpa.LiveryStoreDataEntity;
-import com.soapboxrace.core.jpa.LiveryStoreEntity;
-import com.soapboxrace.core.jpa.PersonaEntity;
-import com.soapboxrace.core.jpa.VinylEntity;
+import java.util.Random;
+import java.util.Set;
+import java.util.List;
+
+import com.soapboxrace.core.jpa.*;
 import com.soapboxrace.core.bo.util.HelpingTools;
 import com.soapboxrace.core.bo.*;
 import com.soapboxrace.core.dao.*;
@@ -25,7 +24,8 @@ public class LiveryCommand {
         VinylDAO vinylDao, 
         LiveryStoreDataDAO liveryStoreDataDao, 
         ParameterBO parameterBO, 
-        PersonaBO personaBO
+        PersonaBO personaBO,
+        VinylProductDAO vinylProductDAO
     ) {
         /* Command construction 
          * 
@@ -156,8 +156,45 @@ public class LiveryCommand {
                     openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_EXPORT_NONEXISTENT"), personaEntity.getPersonaId());
                 }
             } else if(command[1].trim().equals("nft")) {
+                VinylEntity oldLiveries = vinylDao.findByCarId(carEntity.getId());
+                if(oldLiveries != null) {
+                    vinylDao.deleteByCar(carEntity);
+                }
 
-                openFireSoapBoxCli.send(XmppChat.createSystemMessage("Yes, sure!"), personaEntity.getPersonaId());
+                Integer howManyLayers = new Random().nextInt(30) + 1;
+
+                List<VinylProductEntity> vinylProductEntity = vinylProductDAO.getAllByLevelEnabled(personaEntity.getLevel(), true, personaEntity.getUser().isPremium());
+
+                for (int i = 0; i < howManyLayers; ++i) {
+                    Integer hash = vinylProductEntity.get(new Random().nextInt(vinylProductEntity.size())).getHash();
+
+                    VinylEntity DataEntity = new VinylEntity();
+                    DataEntity.setCar(carEntity);
+                    DataEntity.setHash(hash);
+                    DataEntity.setHue1(new Random().nextInt());
+                    DataEntity.setHue2(new Random().nextInt());
+                    DataEntity.setHue3(new Random().nextInt());
+                    DataEntity.setHue4(new Random().nextInt());
+                    DataEntity.setLayer(i);
+                    DataEntity.setMir(new Random().nextBoolean());
+                    DataEntity.setRot(new Random().nextInt());
+                    DataEntity.setSat1(new Random().nextInt());
+                    DataEntity.setSat2(new Random().nextInt());
+                    DataEntity.setSat3(new Random().nextInt());
+                    DataEntity.setSat4(new Random().nextInt());
+                    DataEntity.setScalex(new Random().nextInt());
+                    DataEntity.setScaley(new Random().nextInt());
+                    DataEntity.setShear(new Random().nextInt());
+                    DataEntity.setTranx(new Random().nextInt());
+                    DataEntity.setTrany(new Random().nextInt());
+                    DataEntity.setVar1(new Random().nextInt());
+                    DataEntity.setVar2(new Random().nextInt());
+                    DataEntity.setVar3(new Random().nextInt());
+                    DataEntity.setVar4(new Random().nextInt());
+                    vinylDao.insert(DataEntity);
+                }
+
+                openFireSoapBoxCli.send(XmppChat.createSystemMessage("Yes, sure! Here are " + howManyLayers + " layers of vinyls applied!"), personaEntity.getPersonaId());
             }
         }
 
