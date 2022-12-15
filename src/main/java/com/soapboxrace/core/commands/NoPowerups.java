@@ -1,4 +1,4 @@
-package com.soapboxrace.core.api.commands;
+package com.soapboxrace.core.bo.commands;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
