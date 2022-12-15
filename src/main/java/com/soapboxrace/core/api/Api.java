@@ -1,6 +1,7 @@
 package com.soapboxrace.core.api;
 
 import com.soapboxrace.core.bo.*;
+import com.soapboxrace.core.bo.util.OwnedCarConverter;
 import com.soapboxrace.core.dao.CarDAO;
 import com.soapboxrace.core.jpa.CarEntity;
 
@@ -28,18 +29,18 @@ public class Api {
         String adminToken = parameterBO.getStrParam("ADMIN_AUTH");
 
         if (adminToken == null) {
-            return Response.ok().entity("Missing ADMIN_AUTH").build();
+            return Response.ok().entity("<error>Missing ADMIN_AUTH</error>").build();
         }
 
         if (!adminToken.equals(token)) {
-            return Response.ok().entity("Invalid ADMIN_AUTH").build();
+            return Response.ok().entity("<error>Invalid ADMIN_AUTH</error>").build();
         }
 
         if(carID == null) {
-            return Response.ok().entity("Missing carId param").build();
+            return Response.ok().entity("<error>Missing carId param</error>").build();
         }
-
-        return Response.ok().entity(carDAO.find(carID)).build();
+        
+        return Response.ok().entity(OwnedCarConverter.entity2Trans(carDAO.find(carID))).build();
     }
 }
  
