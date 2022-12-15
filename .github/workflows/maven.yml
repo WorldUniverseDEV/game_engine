@@ -28,10 +28,10 @@ jobs:
       with:
         java-version: 1.11
 
-    - name: get-commit-version
-      id: get-commit-version
+    - name: get-time
+      id: get-time
       run: | 
-        version=$(git log --format="%h" -n 1)
+        version=$(date +'%Y%d%m-%H%M%S')
         echo $version > version.txt
         echo "::set-output name=version::$version"
 
@@ -58,8 +58,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: v${{ steps.get-commit-version.outputs.version }}
-        release_name: SBRWReloaded — v ${{ steps.get-commit-version.outputs.version }}
+        tag_name: v${{ stepsget-time.outputs.version }}
+        release_name: SBRWReloaded — v ${{ steps.get-time.outputs.version }}
         draft: false
         prerelease: false
 
@@ -106,5 +106,5 @@ jobs:
       with:
         upload_url: ${{ steps.set_upload_url.outputs.upload-url }}
         asset_path: ${{ github.workspace }}/target/core-thorntail.jar
-        asset_name: SBRWReloaded-${{ steps.get-commit-version.outputs.version }}.jar
+        asset_name: SBRWReloaded-${{ steps.get-time.outputs.version }}.jar
         asset_content_type: application/octet-stream

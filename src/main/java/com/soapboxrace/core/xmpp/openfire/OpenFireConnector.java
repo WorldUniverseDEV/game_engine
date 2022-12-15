@@ -29,7 +29,6 @@ import java.security.cert.X509Certificate;
 /**
  * Interacts to OpenFire XMPP server using the Smack library.
  * Capable of sending messages.
- * TODO add presence monitoring + chat logging
  */
 @Singleton
 public class OpenFireConnector {
