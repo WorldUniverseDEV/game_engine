@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import javax.ws.rs.core.Response;
 import java.util.Set;
-import java.util.HashSet;
 
 import com.soapboxrace.core.jpa.CarEntity;
 import com.soapboxrace.core.jpa.LiveryStoreDataEntity;
@@ -157,6 +156,7 @@ public class LiveryCommand {
                     openFireSoapBoxCli.send(XmppChat.createSystemMessage("SBRWR_LIVERY_EXPORT_NONEXISTENT"), personaEntity.getPersonaId());
                 }
             } else if(command[1].trim().equals("nft")) {
+
                 openFireSoapBoxCli.send(XmppChat.createSystemMessage("Yes, sure!"), personaEntity.getPersonaId());
             }
         }

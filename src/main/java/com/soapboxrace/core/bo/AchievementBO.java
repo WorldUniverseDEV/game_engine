@@ -25,6 +25,8 @@ import com.soapboxrace.jaxb.xmpp.XMPP_ResponseTypeAchievementsAwarded;
 import javax.annotation.PostConstruct;
 import javax.ejb.*;
 import javax.script.ScriptException;
+import javax.validation.constraints.Null;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -412,6 +414,10 @@ public class AchievementBO {
 
                         if (currentRank == null) {
                             currentRank = createPersonaAchievementRank(personaAchievementEntity, current);
+                        }
+
+                        if (previousRank == null) {
+                            previousRank = createPersonaAchievementRank(personaAchievementEntity, current);
                         }
 
                         long threshold = current.getThresholdValue();

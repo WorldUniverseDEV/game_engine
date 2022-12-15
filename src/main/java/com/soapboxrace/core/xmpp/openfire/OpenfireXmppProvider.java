@@ -125,7 +125,7 @@ public class OpenfireXmppProvider implements XmppProvider {
     public List<Long> getAllPersonasInGroup(long personaId) {
         Builder builder = getBuilder("chatrooms/forUser",
                 Map.of(
-                        "userName", "sbrw." + personaId,
+                        "userName", parameterBO.getStrParam("SBRWR_XMPP_APPEND", "sbrw") + "." + personaId,
                         "domain", xmppIp,
                         "resource", "EA-Chat"));
         MUCRoomEntities roomEntities = builder.get(MUCRoomEntities.class);
@@ -133,7 +133,6 @@ public class OpenfireXmppProvider implements XmppProvider {
         for (MUCRoomEntity entity : listRoomEntity) {
             String roomName = entity.getRoomName();
             if (roomName.contains("group.channel.")) {
-                // FIXME: apparently we need to make the request TWICE, first one will always fail for some reason
                 getAllOccupantsInRoom(roomName);
                 return getAllOccupantsInRoom(roomName);
             }
