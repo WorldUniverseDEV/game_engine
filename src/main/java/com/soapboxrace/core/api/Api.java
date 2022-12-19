@@ -2,7 +2,6 @@ package com.soapboxrace.core.api;
 
 import com.soapboxrace.core.bo.*;
 import com.soapboxrace.core.dao.CarDAO;
-import com.soapboxrace.core.jpa.CarEntity;
 
 import javax.ejb.EJB;
 import javax.ws.rs.GET;
