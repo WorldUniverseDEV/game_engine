@@ -415,10 +415,6 @@ public class AchievementBO {
                             currentRank = createPersonaAchievementRank(personaAchievementEntity, current);
                         }
 
-                        if (previousRank == null) {
-                            previousRank = createPersonaAchievementRank(personaAchievementEntity, current);
-                        }
-
                         long threshold = current.getThresholdValue();
 
                         if (currentRank.getState().equals("Completed") || currentRank.getState().equals("RewardWaiting"))
