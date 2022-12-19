@@ -25,7 +25,6 @@ import com.soapboxrace.jaxb.xmpp.XMPP_ResponseTypeAchievementsAwarded;
 import javax.annotation.PostConstruct;
 import javax.ejb.*;
 import javax.script.ScriptException;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;

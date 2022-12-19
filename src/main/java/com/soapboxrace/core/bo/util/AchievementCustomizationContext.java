@@ -12,6 +12,7 @@ import com.soapboxrace.jaxb.http.*;
 import java.util.Collection;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class AchievementCustomizationContext {
 
     private final Type type;

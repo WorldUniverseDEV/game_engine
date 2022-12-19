@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.AccessLevel;
 
 @Entity
 @Table(name = "LIVERYSTORE_DATA")

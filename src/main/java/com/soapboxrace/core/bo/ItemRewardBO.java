@@ -309,6 +309,7 @@ public class ItemRewardBO {
     /**
      * Exposes access to builder objects for rewards.
      */
+    @SuppressWarnings("unused")
     public class RewardGenerator {
         /**
          * Creates a cash reward builder
@@ -630,6 +631,7 @@ public class ItemRewardBO {
     /**
      * Reward builder for random selections
      */
+    @SuppressWarnings("unused")
     public class RandomSelectionBuilder extends RewardBuilder<ItemRewardBase> {
 
         private List<ItemRewardBase> choices;
