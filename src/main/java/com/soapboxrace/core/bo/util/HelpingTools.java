@@ -12,6 +12,7 @@ import com.soapboxrace.core.xmpp.OpenFireSoapBoxCli;
 import com.soapboxrace.jaxb.xmpp.AchievementAwarded;
 import com.soapboxrace.jaxb.xmpp.AchievementsAwarded;
 import com.soapboxrace.core.dao.*;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.time.LocalDate;
 import javax.xml.datatype.DatatypeConstants;
@@ -127,4 +128,11 @@ public class HelpingTools {
 		achievementsAwarded.setAchievements(achievements);
 		openFireSoapBoxCli.send(achievementsAwarded, personaEntity.getPersonaId());
 	}
+
+    public static String calcHash(String text) {
+        if (text != null && !text.isEmpty()) {
+            return DigestUtils.sha1Hex(text);
+        }
+        return "empty";
+    }
 }
