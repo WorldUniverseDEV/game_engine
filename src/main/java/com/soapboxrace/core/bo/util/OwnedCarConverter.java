@@ -17,6 +17,49 @@ import java.util.Set;
 
 public class OwnedCarConverter {
 
+    public static SetupCarTrans makeCarSetupTrans(CarEntity carEntity) {
+        SetupCarTrans trans = new SetupCarTrans();
+
+        trans.setBaseCar(carEntity.getBaseCar());
+        trans.setPhysicsProfileHash(carEntity.getPhysicsProfileHash());
+        trans.setCarClassHash(carEntity.getCarClassHash());
+        trans.setId(carEntity.getId().intValue());
+
+        ArrayOfPerformancePartTrans arrayOfPerformancePartTrans = new ArrayOfPerformancePartTrans();
+        List<PerformancePartTrans> performancePartTransList = arrayOfPerformancePartTrans.getPerformancePartTrans();
+        Set<PerformancePartEntity> performanceParts = carEntity.getPerformanceParts();
+        for (PerformancePartEntity performancePartEntity : performanceParts) {
+            PerformancePartTrans performancePartTrans = new PerformancePartTrans();
+            performancePartTrans.setPerformancePartAttribHash(performancePartEntity.getPerformancePartAttribHash());
+            performancePartTransList.add(performancePartTrans);
+        }
+        trans.setPerformanceParts(arrayOfPerformancePartTrans);
+
+        ArrayOfSkillModPartTrans arrayOfSkillModPartTrans = new ArrayOfSkillModPartTrans();
+        List<SkillModPartTrans> skillModPartTransList = arrayOfSkillModPartTrans.getSkillModPartTrans();
+        Set<SkillModPartEntity> skillModParts = carEntity.getSkillModParts();
+        for (SkillModPartEntity skillModPartEntity : skillModParts) {
+            SkillModPartTrans skillModPartTrans = new SkillModPartTrans();
+            skillModPartTrans.setIsFixed(skillModPartEntity.isFixed());
+            skillModPartTrans.setSkillModPartAttribHash(skillModPartEntity.getSkillModPartAttribHash());
+            skillModPartTransList.add(skillModPartTrans);
+        }
+        trans.setSkillModParts(arrayOfSkillModPartTrans);
+
+        ArrayOfVisualPartTrans arrayOfVisualPartTrans = new ArrayOfVisualPartTrans();
+        List<VisualPartTrans> visualPartTransList = arrayOfVisualPartTrans.getVisualPartTrans();
+        Set<VisualPartEntity> visualParts = carEntity.getVisualParts();
+        for (VisualPartEntity visualPartEntity : visualParts) {
+            VisualPartTrans visualPartTrans = new VisualPartTrans();
+            visualPartTrans.setPartHash(visualPartEntity.getPartHash());
+            visualPartTrans.setSlotHash(visualPartEntity.getSlotHash());
+            visualPartTransList.add(visualPartTrans);
+        }
+        trans.setVisualParts(arrayOfVisualPartTrans);
+        
+        return trans;
+    }
+
     public static OwnedCarTrans entity2Trans(CarEntity carEntity) {
         OwnedCarTrans ownedCarTrans = new OwnedCarTrans();
         ownedCarTrans.setId(carEntity.getId());
