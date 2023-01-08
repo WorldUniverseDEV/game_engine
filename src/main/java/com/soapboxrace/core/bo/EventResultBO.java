@@ -1,12 +1,15 @@
 package com.soapboxrace.core.bo;
 
 import com.soapboxrace.core.bo.util.AchievementEventContext;
-import com.soapboxrace.core.dao.PersonaDAO;
+import com.soapboxrace.core.dao.*;
 import com.soapboxrace.core.jpa.*;
 import com.soapboxrace.jaxb.http.ArbitrationPacket;
 import com.soapboxrace.jaxb.http.ClientPhysicsMetrics;
 import com.soapboxrace.jaxb.http.EventResult;
 import com.soapboxrace.jaxb.http.ExitPath;
+import com.soapboxrace.core.bo.util.OwnedCarConverter;
+import com.soapboxrace.jaxb.util.JAXBUtility;
+import com.soapboxrace.core.bo.util.HelpingTools;
 
 import javax.ejb.EJB;
 import java.util.Map;
@@ -33,6 +36,12 @@ public abstract class EventResultBO<TA extends ArbitrationPacket, TR extends Eve
 
     @EJB
     protected PersonaDAO personaDAO;
+
+    @EJB
+    private CarDAO carDAO;
+
+    @EJB
+    private EventDataSetupDAO eventDataSetupDAO;
 
     /**
      * Converts the given {@link TA} instance to a new {@link TR} instance.
@@ -92,6 +101,22 @@ public abstract class EventResultBO<TA extends ArbitrationPacket, TR extends Eve
             eventDataEntity.setSpeedMaximum(clientPhysicsMetrics.getSpeedMaximum());
             eventDataEntity.setSpeedMedian(clientPhysicsMetrics.getSpeedMedian());
         }
+
+        //EVENT_DATA_SETUPS
+        String carData = JAXBUtility.marshal(OwnedCarConverter.entity2Trans(carDAO.find(packet.getCarId())));
+        String carHash = HelpingTools.calcHash(carData);
+
+        EventDataSetupEntity carSetup = eventDataSetupDAO.findByHash(carHash);
+        if(carSetup == null) {
+            EventDataSetupEntity carSetupTmp = new EventDataSetupEntity();
+            carSetupTmp.setCarId(packet.getCarId());
+            carSetupTmp.setHash(carHash);
+            carSetupTmp.setCarSetup(carData);
+            carSetupTmp.setPersonaId(activePersonaId);
+            eventDataSetupDAO.insert(carSetupTmp);
+        }
+        
+        eventDataEntity.setEventDataSetupHash(carHash);
     }
 
     /**

@@ -77,6 +77,8 @@ public class EventDataEntity {
     private Float speedMaximum;
     private Float speedMedian;
 
+    private String eventDataSetupHash;
+
     public Long getId() {
         return id;
     }
@@ -401,5 +403,13 @@ public class EventDataEntity {
 
     public void setSpeedMedian(Float speedMedian) {
         this.speedMedian = speedMedian;
+    }
+
+    public String getEventDataSetupHash() {
+        return eventDataSetupHash;
+    }
+
+    public void setEventDataSetupHash(String eventDataSetupHash) {
+        this.eventDataSetupHash = eventDataSetupHash;
     }
 }

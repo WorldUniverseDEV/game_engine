@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import javax.ws.rs.core.Response;
 import java.util.Set;
-import java.util.HashSet;
 
 import com.soapboxrace.core.jpa.CarEntity;
 import com.soapboxrace.core.jpa.LiveryStoreDataEntity;
