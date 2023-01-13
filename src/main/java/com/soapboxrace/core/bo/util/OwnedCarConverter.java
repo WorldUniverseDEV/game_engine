@@ -10,6 +10,7 @@ import com.soapboxrace.core.jpa.*;
 import com.soapboxrace.jaxb.http.*;
 
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
@@ -23,39 +24,27 @@ public class OwnedCarConverter {
         trans.setBaseCar(carEntity.getBaseCar());
         trans.setPhysicsProfileHash(carEntity.getPhysicsProfileHash());
         trans.setCarClassHash(carEntity.getCarClassHash());
-        trans.setId(carEntity.getId().intValue());
 
-        ArrayOfPerformancePartTrans arrayOfPerformancePartTrans = new ArrayOfPerformancePartTrans();
-        List<PerformancePartTrans> performancePartTransList = arrayOfPerformancePartTrans.getPerformancePartTrans();
+        List<Integer> performancePartTransList = new ArrayList<Integer>();
         Set<PerformancePartEntity> performanceParts = carEntity.getPerformanceParts();
         for (PerformancePartEntity performancePartEntity : performanceParts) {
-            PerformancePartTrans performancePartTrans = new PerformancePartTrans();
-            performancePartTrans.setPerformancePartAttribHash(performancePartEntity.getPerformancePartAttribHash());
-            performancePartTransList.add(performancePartTrans);
+            performancePartTransList.add(performancePartEntity.getPerformancePartAttribHash());
         }
-        trans.setPerformanceParts(arrayOfPerformancePartTrans);
+        trans.setPerformanceParts(performancePartTransList);
 
-        ArrayOfSkillModPartTrans arrayOfSkillModPartTrans = new ArrayOfSkillModPartTrans();
-        List<SkillModPartTrans> skillModPartTransList = arrayOfSkillModPartTrans.getSkillModPartTrans();
+        List<Integer> skillModPartTransList = new ArrayList<Integer>();
         Set<SkillModPartEntity> skillModParts = carEntity.getSkillModParts();
         for (SkillModPartEntity skillModPartEntity : skillModParts) {
-            SkillModPartTrans skillModPartTrans = new SkillModPartTrans();
-            skillModPartTrans.setIsFixed(skillModPartEntity.isFixed());
-            skillModPartTrans.setSkillModPartAttribHash(skillModPartEntity.getSkillModPartAttribHash());
-            skillModPartTransList.add(skillModPartTrans);
+            skillModPartTransList.add(skillModPartEntity.getSkillModPartAttribHash());
         }
-        trans.setSkillModParts(arrayOfSkillModPartTrans);
+        trans.setSkillModParts(skillModPartTransList);
 
-        ArrayOfVisualPartTrans arrayOfVisualPartTrans = new ArrayOfVisualPartTrans();
-        List<VisualPartTrans> visualPartTransList = arrayOfVisualPartTrans.getVisualPartTrans();
+        List<Integer> visualPartTransList = new ArrayList<Integer>();
         Set<VisualPartEntity> visualParts = carEntity.getVisualParts();
         for (VisualPartEntity visualPartEntity : visualParts) {
-            VisualPartTrans visualPartTrans = new VisualPartTrans();
-            visualPartTrans.setPartHash(visualPartEntity.getPartHash());
-            visualPartTrans.setSlotHash(visualPartEntity.getSlotHash());
-            visualPartTransList.add(visualPartTrans);
+            visualPartTransList.add(visualPartEntity.getPartHash());
         }
-        trans.setVisualParts(arrayOfVisualPartTrans);
+        trans.setVisualParts(visualPartTransList);
         
         return trans;
     }

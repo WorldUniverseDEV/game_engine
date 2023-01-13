@@ -3,13 +3,13 @@ package com.soapboxrace.jaxb.http;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import java.util.List;
  
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SetupCarTrans", propOrder = {
     "baseCar",
     "physicsProfileHash",
     "carClassHash",
-    "id",
     "performanceParts",
     "skillModParts",
     "visualParts"
@@ -20,9 +20,9 @@ public class SetupCarTrans {
     protected int physicsProfileHash;
     protected int carClassHash;
     protected int id;
-    protected ArrayOfPerformancePartTrans performanceParts;
-    protected ArrayOfSkillModPartTrans skillModParts;
-    protected ArrayOfVisualPartTrans visualParts;
+    protected List<Integer> performanceParts;
+    protected List<Integer> skillModParts;
+    protected List<Integer> visualParts;
  
     public int getBaseCar() {
         return baseCar;
@@ -40,19 +40,11 @@ public class SetupCarTrans {
         this.carClassHash = value;
     }
  
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int value) {
-        this.id = value;
-    }
- 
-    public ArrayOfPerformancePartTrans getPerformanceParts() {
+    public List<Integer> getPerformanceParts() {
         return performanceParts;
     }
  
-    public void setPerformanceParts(ArrayOfPerformancePartTrans value) {
+    public void setPerformanceParts(List<Integer> value) {
         this.performanceParts = value;
     }
 
@@ -64,19 +56,19 @@ public class SetupCarTrans {
         this.physicsProfileHash = value;
     }
  
-    public ArrayOfSkillModPartTrans getSkillModParts() {
+    public List<Integer> getSkillModParts() {
         return skillModParts;
     }
 
-    public void setSkillModParts(ArrayOfSkillModPartTrans value) {
+    public void setSkillModParts(List<Integer> value) {
         this.skillModParts = value;
     }
  
-    public ArrayOfVisualPartTrans getVisualParts() {
+    public List<Integer> getVisualParts() {
         return visualParts;
     }
  
-    public void setVisualParts(ArrayOfVisualPartTrans value) {
+    public void setVisualParts(List<Integer> value) {
         this.visualParts = value;
     }
 }
