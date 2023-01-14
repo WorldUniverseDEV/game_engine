@@ -105,7 +105,6 @@ public abstract class EventResultBO<TA extends ArbitrationPacket, TR extends Eve
         //EVENT_DATA_SETUPS
         String carData = JAXBUtility.marshal(OwnedCarConverter.makeCarSetupTrans(carDAO.find(packet.getCarId())));
         String carHash = HelpingTools.calcHash(carData);
-
         EventDataSetupEntity carSetup = eventDataSetupDAO.findByHash(carHash);
         if(carSetup == null) {
             EventDataSetupEntity carSetupTmp = new EventDataSetupEntity();

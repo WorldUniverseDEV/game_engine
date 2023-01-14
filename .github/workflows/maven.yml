@@ -113,5 +113,5 @@ jobs:
       with:
         upload_url: ${{ steps.set_upload_url.outputs.upload-url }}
         asset_path: ${{ github.workspace }}/target/core-thorntail.jar
-        asset_name: TheLab-${{ steps.get-commit-version.outputs.version }}.jar
+        asset_name: TheLab-${{ steps.get-commit-version.outputs.commit }}.jar
         asset_content_type: application/octet-stream
