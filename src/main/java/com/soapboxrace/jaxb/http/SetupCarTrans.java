@@ -3,7 +3,6 @@ package com.soapboxrace.jaxb.http;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import java.util.List;
  
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SetupCarTrans", propOrder = {
@@ -20,9 +19,9 @@ public class SetupCarTrans {
     protected int physicsProfileHash;
     protected int carClassHash;
     protected int id;
-    protected List<Integer> performanceParts;
-    protected List<Integer> skillModParts;
-    protected List<Integer> visualParts;
+    protected String performanceParts;
+    protected String skillModParts;
+    protected String visualParts;
  
     public int getBaseCar() {
         return baseCar;
@@ -40,11 +39,11 @@ public class SetupCarTrans {
         this.carClassHash = value;
     }
  
-    public List<Integer> getPerformanceParts() {
+    public String getPerformanceParts() {
         return performanceParts;
     }
  
-    public void setPerformanceParts(List<Integer> value) {
+    public void setPerformanceParts(String value) {
         this.performanceParts = value;
     }
 
@@ -56,19 +55,19 @@ public class SetupCarTrans {
         this.physicsProfileHash = value;
     }
  
-    public List<Integer> getSkillModParts() {
+    public String getSkillModParts() {
         return skillModParts;
     }
 
-    public void setSkillModParts(List<Integer> value) {
+    public void setSkillModParts(String value) {
         this.skillModParts = value;
     }
  
-    public List<Integer> getVisualParts() {
+    public String getVisualParts() {
         return visualParts;
     }
  
-    public void setVisualParts(List<Integer> value) {
+    public void setVisualParts(String value) {
         this.visualParts = value;
     }
 }

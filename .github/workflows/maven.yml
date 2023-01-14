@@ -35,6 +35,13 @@ jobs:
         echo $version > version.txt
         echo "::set-output name=version::$version"
 
+    - name: get-commit-version
+      id: get-commit-version
+      run: | 
+        commit=$(git log --format="%h" -n 1)
+        echo $commit > commit.txt
+        echo "::set-output name=commit::$commit"
+
     - name: Cache Maven packages
       uses: actions/cache@v2
       with:
@@ -106,5 +113,5 @@ jobs:
       with:
         upload_url: ${{ steps.set_upload_url.outputs.upload-url }}
         asset_path: ${{ github.workspace }}/target/core-thorntail.jar
-        asset_name: SBRWReloaded-${{ steps.get-time.outputs.version }}.jar
+        asset_name: TheLab-${{ steps.get-commit-version.outputs.version }}.jar
         asset_content_type: application/octet-stream

@@ -30,21 +30,21 @@ public class OwnedCarConverter {
         for (PerformancePartEntity performancePartEntity : performanceParts) {
             performancePartTransList.add(performancePartEntity.getPerformancePartAttribHash());
         }
-        trans.setPerformanceParts(performancePartTransList);
+        trans.setPerformanceParts(performancePartTransList.toString());
 
         List<Integer> skillModPartTransList = new ArrayList<Integer>();
         Set<SkillModPartEntity> skillModParts = carEntity.getSkillModParts();
         for (SkillModPartEntity skillModPartEntity : skillModParts) {
             skillModPartTransList.add(skillModPartEntity.getSkillModPartAttribHash());
         }
-        trans.setSkillModParts(skillModPartTransList);
+        trans.setSkillModParts(skillModPartTransList.toString());
 
         List<Integer> visualPartTransList = new ArrayList<Integer>();
         Set<VisualPartEntity> visualParts = carEntity.getVisualParts();
         for (VisualPartEntity visualPartEntity : visualParts) {
             visualPartTransList.add(visualPartEntity.getPartHash());
         }
-        trans.setVisualParts(visualPartTransList);
+        trans.setVisualParts(visualPartTransList.toString());
         
         return trans;
     }
