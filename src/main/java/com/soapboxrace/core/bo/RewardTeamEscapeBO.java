@@ -17,10 +17,6 @@ import org.apache.commons.lang3.RandomUtils;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
-
 @Stateless
 public class RewardTeamEscapeBO extends RewardEventBO<TeamEscapeArbitrationPacket> {
 
@@ -30,9 +26,6 @@ public class RewardTeamEscapeBO extends RewardEventBO<TeamEscapeArbitrationPacke
     @EJB
     private LegitRaceBO legitRaceBO;
 
-    @EJB
-    private ParameterBO parameterBO;
-
     public Accolades getAccolades(Long activePersonaId,
                                   TeamEscapeArbitrationPacket teamEscapeArbitrationPacket,
                                   EventDataEntity eventDataEntity, EventSessionEntity eventSessionEntity, AchievementTransaction achievementTransaction) {
@@ -41,17 +34,6 @@ public class RewardTeamEscapeBO extends RewardEventBO<TeamEscapeArbitrationPacke
         eventDataEntity.setLegit(legit);
         if (!legit || finishReason != 22) {
             return new Accolades();
-        }
-
-        String valid22result = parameterBO.getStrParam("SBRWR_POST_VALID_22", "N/A");
-        valid22result = valid22result.replace("{$EVENTDATAID$}", eventSessionEntity.getId().toString());
-
-        if(!valid22result.equals("N/A")) {
-                try {
-                        URLConnection url = new URL(valid22result).openConnection();
-                        url.setRequestProperty("User-Agent", parameterBO.getStrParam("SBRWR_DEFAULT_UA", "SBRWR-Core/NRZ-Branch"));
-                        new String(url.getInputStream().readAllBytes());
-                } catch (IOException e) { }
         }
 
         float bustedCount = teamEscapeArbitrationPacket.getBustedCount();

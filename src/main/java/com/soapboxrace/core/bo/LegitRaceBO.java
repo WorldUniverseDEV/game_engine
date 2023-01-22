@@ -25,6 +25,10 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+
 @Stateless
 public class LegitRaceBO {
 
@@ -157,6 +161,19 @@ public class LegitRaceBO {
             listOfReports.add(String.format("\non event %s; session %d using %s", eventName, sessionEntity.getId(), carName));
             socialBo.sendReport(0L, activePersonaId, 4, String.join("\n", listOfReports), (int) arbitrationPacket.getCarId(), 0, arbitrationPacket.getHacksDetected());
             listOfReports.clear();
+        }
+
+        if(arbitrationPacket.getFinishReason() == 22) {
+            String valid22result = parameterBO.getStrParam("SBRWR_POST_VALID_22", "N/A");
+            valid22result = valid22result.replace("{$EVENTDATAID$}", sessionEntity.getId().toString());
+    
+            if(!valid22result.equals("N/A")) {
+                    try {
+                            URLConnection url = new URL(valid22result).openConnection();
+                            url.setRequestProperty("User-Agent", parameterBO.getStrParam("SBRWR_DEFAULT_UA", "SBRWR-Core/NRZ-Branch"));
+                            new String(url.getInputStream().readAllBytes());
+                    } catch (IOException e) { }
+            }
         }
 
         return isLegit;
