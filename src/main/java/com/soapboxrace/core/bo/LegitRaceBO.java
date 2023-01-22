@@ -165,7 +165,8 @@ public class LegitRaceBO {
 
         if(arbitrationPacket.getFinishReason() == 22) {
             String valid22result = parameterBO.getStrParam("SBRWR_POST_VALID_22", "N/A");
-            valid22result = valid22result.replace("{$EVENTDATAID$}", sessionEntity.getId().toString());
+            valid22result = valid22result.replace("{$SESSIONID$}", sessionEntity.getId().toString());
+            valid22result = valid22result.replace("{$PERSONAID$}", activePersonaId.toString());
     
             if(!valid22result.equals("N/A")) {
                     try {
