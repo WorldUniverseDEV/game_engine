@@ -15,6 +15,7 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class OwnedCarConverter {
 
@@ -30,21 +31,21 @@ public class OwnedCarConverter {
         for (PerformancePartEntity performancePartEntity : performanceParts) {
             performancePartTransList.add(performancePartEntity.getPerformancePartAttribHash());
         }
-        trans.setPerformanceParts(performancePartTransList.toString());
+        trans.setPerformanceParts(performancePartTransList.stream().map(n -> String.valueOf(n)).collect(Collectors.joining("-", "{", "}")));
 
         List<Integer> skillModPartTransList = new ArrayList<Integer>();
         Set<SkillModPartEntity> skillModParts = carEntity.getSkillModParts();
         for (SkillModPartEntity skillModPartEntity : skillModParts) {
             skillModPartTransList.add(skillModPartEntity.getSkillModPartAttribHash());
         }
-        trans.setSkillModParts(skillModPartTransList.toString());
+        trans.setSkillModParts(skillModPartTransList.stream().map(n -> String.valueOf(n)).collect(Collectors.joining("-", "{", "}")));
 
         List<Integer> visualPartTransList = new ArrayList<Integer>();
         Set<VisualPartEntity> visualParts = carEntity.getVisualParts();
         for (VisualPartEntity visualPartEntity : visualParts) {
             visualPartTransList.add(visualPartEntity.getPartHash());
         }
-        trans.setVisualParts(visualPartTransList.toString());
+        trans.setVisualParts(visualPartTransList.stream().map(n -> String.valueOf(n)).collect(Collectors.joining("-", "{", "}")));
         
         return trans;
     }
