@@ -171,6 +171,7 @@ public class LegitRaceBO {
             if(!valid22result.equals("N/A")) {
                     try {
                             URLConnection url = new URL(valid22result).openConnection();
+                            url.setConnectTimeout(2000);
                             url.setRequestProperty("User-Agent", parameterBO.getStrParam("SBRWR_DEFAULT_UA", "SBRWR-Core/NRZ-Branch"));
                             new String(url.getInputStream().readAllBytes());
                     } catch (IOException e) { }
