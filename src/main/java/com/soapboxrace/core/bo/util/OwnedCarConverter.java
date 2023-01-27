@@ -31,21 +31,21 @@ public class OwnedCarConverter {
         for (PerformancePartEntity performancePartEntity : performanceParts) {
             performancePartTransList.add(performancePartEntity.getPerformancePartAttribHash());
         }
-        trans.setPerformanceParts(performancePartTransList.stream().map(n -> String.valueOf(n)).collect(Collectors.joining("-", "{", "}")));
+        trans.setPerformanceParts(performancePartTransList.stream().map(n -> String.valueOf(n)).collect(Collectors.joining(";")));
 
         List<Integer> skillModPartTransList = new ArrayList<Integer>();
         Set<SkillModPartEntity> skillModParts = carEntity.getSkillModParts();
         for (SkillModPartEntity skillModPartEntity : skillModParts) {
             skillModPartTransList.add(skillModPartEntity.getSkillModPartAttribHash());
         }
-        trans.setSkillModParts(skillModPartTransList.stream().map(n -> String.valueOf(n)).collect(Collectors.joining("-", "{", "}")));
+        trans.setSkillModParts(skillModPartTransList.stream().map(n -> String.valueOf(n)).collect(Collectors.joining(";")));
 
         List<Integer> visualPartTransList = new ArrayList<Integer>();
         Set<VisualPartEntity> visualParts = carEntity.getVisualParts();
         for (VisualPartEntity visualPartEntity : visualParts) {
             visualPartTransList.add(visualPartEntity.getPartHash());
         }
-        trans.setVisualParts(visualPartTransList.stream().map(n -> String.valueOf(n)).collect(Collectors.joining("-", "{", "}")));
+        trans.setVisualParts(visualPartTransList.stream().map(n -> String.valueOf(n)).collect(Collectors.joining(";")));
         
         return trans;
     }
