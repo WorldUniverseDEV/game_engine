@@ -18,7 +18,6 @@ public class SetupCarTrans {
     protected int baseCar;
     protected int physicsProfileHash;
     protected int carClassHash;
-    protected int id;
     protected String performanceParts;
     protected String skillModParts;
     protected String visualParts;
