@@ -52,6 +52,9 @@ public class Event {
 
     @EJB
     private LobbyEntrantDAO lobbyEntrantDao;
+    
+    @EJB
+    private PresenceBO presenceBO;
 
     @Inject
     private RequestSessionInfo requestSessionInfo;
@@ -75,6 +78,8 @@ public class Event {
         matchmakingBO.removePlayerFromQueue(activePersonaId);
         eventBO.createEventDataSession(activePersonaId, eventSessionId);
         tokenBO.setEventSessionId(requestSessionInfo.getTokenSessionEntity(), eventSessionId);
+
+        presenceBO.updatePresence(activePersonaId, 3);
 
         //NOPU SET
         if(parameterBO.getBoolParam("SBRWR_ENABLE_NOPU")) {
