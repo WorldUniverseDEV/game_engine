@@ -60,7 +60,6 @@ public class SocialRelationshipBO {
         if(personaPresence >= 3L) {
             personaPresence = 2L;
         }
-
         sendPresencePackets(personaDAO.find(personaPresenceUpdated.getPersonaId()), personaPresence);
     }
 
