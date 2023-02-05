@@ -56,7 +56,12 @@ public class SocialRelationshipBO {
 
     @Asynchronous
     public void handlePersonaPresenceUpdated(@Observes PersonaPresenceUpdated personaPresenceUpdated) {
-        sendPresencePackets(personaDAO.find(personaPresenceUpdated.getPersonaId()), personaPresenceUpdated.getPresence());
+        Long personaPresence = personaPresenceUpdated.getPresence();
+        if(personaPresence >= 3L) {
+            personaPresence = 2L;
+        }
+
+        sendPresencePackets(personaDAO.find(personaPresenceUpdated.getPersonaId()), personaPresence);
     }
 
     public PersonaFriendsList getFriendsList(Long userId) {
